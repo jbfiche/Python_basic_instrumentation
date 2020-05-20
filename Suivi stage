@@ -1,3 +1,4 @@
 Testé le programme bCNC
 Imprimantye fonctionne coreccetement et répond au g code 
-commandes demandées : Déplacement horizontal 
+commandes demandées : Déplacement horizontal , rotations, reset du posiotionnement (G28)
+Comprendre pk le code python marche pas
