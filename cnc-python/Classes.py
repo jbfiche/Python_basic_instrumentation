@@ -6,12 +6,16 @@ Created on Wed May 27 14:24:47 2020
 """
 
 import time
+import serial
 
 class CNC:
-    def Ouverture(port):
-        import serial
-        CNC.ouverture=serial.Serial(port,115200);
+    def __init__(self,port):
+        self.port = port
+        
+    def Ouverture(self):
+        self.s  = serial.Serial(self.port,115200);
         print("Port "+port+" ouvert")
+
     def GcodeXY(X,Y):
         CNC.ouverture.flushInput()
         CNC.gcodeXY='G00 G91 G17 X'+str(X)+" Y"+str(Y)+'\r\n'
@@ -19,16 +23,20 @@ class CNC:
         CNC.ouverture.write(CNC.gcodeXY.encode())
         grbl_out = CNC.ouverture.readline() 
         print(" : " + grbl_out.decode().strip())
-    def Fermeture(port):
-        CNC.fermeture=CNC.ouverture.close()
+
+    def Fermeture(self):
+        self.s.close()
         print("Port "+port+" fermé")
         
      
 
+ cnc = CNC('COM4')
+ cnc.Ouverture
+ cnc.Fermeture
 
-CNC.Ouverture('COM4')
-CNC.GcodeXY(-20,-10)
-time.sleep(5)
-CNC.Fermeture('COM4')
+#CNC.Ouverture('COM4')
+#CNC.GcodeXY(-20,-10)
+#time.sleep(5)
+#CNC.Fermeture('COM4')
 
  
