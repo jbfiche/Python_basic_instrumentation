@@ -66,8 +66,8 @@ class CNC:
         grbl_out=self.s.readline()
         A=grbl_out.decode().strip()
         caractere="|"
-        C=A.split(caractere)
-        print(C)
+        M=A.split(caractere)
+        print(M[1])
 
     def WPositions(self):
         self.s.flushInput()
@@ -78,7 +78,7 @@ class CNC:
         E=grbl_out.decode().strip()
         caractere="|"
         W=E.split(caractere)
-        print(W)
+        print(W[3])
    
     def FS(self):
         self.s.flushInput()
@@ -88,8 +88,8 @@ class CNC:
         grbl_out=self.s.readline()
         A=grbl_out.decode().strip()
         caractere="|"
-        C=A.split(caractere)
-        print(C[2])
+        F=A.split(caractere)
+        print(F[2])
         
     def CloseConnection(self):
         try:
