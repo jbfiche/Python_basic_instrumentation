@@ -2,7 +2,12 @@
 """
 Created on Wed May 27 14:24:47 2020
 
-@author: NoelFlantier
+@author: Aymerick Reinders
+
+The CNC class is used to control a 3D-mill instrument using G-codes ... blablabla
+
+Tu dois donner ici des explications d'ordre général sur le but de la classe
+et quel type d'instrument elle contrôle'
 """
 
 import time
@@ -10,9 +15,20 @@ import serial
 
 class CNC:
     
+    # For the class instanciation, the input variable port is indicating which 
+    # COM port the 3D-Mill is connected to.
+    # -------------------------------------
+    
     def __init__(self,port):
         self.port = port   
         return
+    
+    # The OpenConnection method is opening the serial communication port and 
+    # keeps the output in self.
+    # The time delay of 2s is important to keep for the initialization, else
+    # the communication will not be established properly and it won't be 
+    # possible to control the 3D-mill.
+    # --------------------------------
     
     def OpenConnection(self):
         try:
@@ -24,7 +40,7 @@ class CNC:
             print("The port "+self.port+" is already opened or is not connected ")
             pass
         
-    def Moove(self,X,Y,Z):
+    def Move(self,X,Y,Z):
         self.s.flushInput()
         string2Send="G00 G91 X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"
         print(type(string2Send))
@@ -47,7 +63,7 @@ class CNC:
         grbl_out = self.s.readline() 
         print(" : " + grbl_out.decode().strip())
         
-    def Statut(self):
+    def Status(self):
         self.s.flushInput()
         string2Send="?"
         print("Sending :{}".format(string2Send))
@@ -58,7 +74,7 @@ class CNC:
         self.B=A.split(caractere)
         print("Printer State : "+self.B[0].strip("<"))
         
-    def MPositions(self):
+    def Read_MPos(self):
         self.s.flushInput()
         string2Send="?"
         print("Sending :{}".format(string2Send))
@@ -69,7 +85,7 @@ class CNC:
         M=A.split(caractere)
         print(M[1])
 
-    def WPositions(self):
+    def Read_WPos(self):
         self.s.flushInput()
         string2Send="?"
         print("Sending :{}".format(string2Send))
@@ -105,9 +121,9 @@ if __name__ == "__main__":
     cnc = CNC('COM4')
     cnc.OpenConnection()
     cnc.Homing()
-    cnc.Moove(5,0,0)
+    cnc.Move(5,0,0)
     cnc.WaitForIdle()
-    cnc.Moove(-10,0,0)
+    cnc.Move(-10,0,0)
     cnc.WaitForIdle()
     cnc.MPositions()
     cnc.WPositions()
