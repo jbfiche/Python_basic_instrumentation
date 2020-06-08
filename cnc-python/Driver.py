@@ -28,34 +28,59 @@ class CNC:
     # The time delay of 2s is important to keep for the initialization, else
     # the communication will not be established properly and it won't be 
     # possible to control the 3D-mill.
+    # When an error occurs, Python will normally stop and generate an error message.
+    # We will change this message by using "try" and "except"
     # --------------------------------
     
     def OpenConnection(self):
-        try:
-            self.s  = serial.Serial(self.port,115200);
+        try:                                            # The try block lets you test a block of code for errors.
+            self.s  = serial.Serial(self.port,115200);  # Open the port and keeps the output in self.s
             print("Port "+self.port+" opened")
             time.sleep(2)
-            self.s.flushInput()
-        except serial.SerialException:
+            self.s.flushInput()                         # Remove data from input buffer
+        except serial.SerialException:                  # The except block lets you handle the error.
             print("The port "+self.port+" is already opened or is not connected ")
             pass
         
+    # The Move method is sending instructions to the 3D-mill in order to move the device
+    # The user must inform the coordinates
+    # ------------------------------------
+   
     def Move(self,X,Y,Z):
-        self.s.flushInput()
-        string2Send="G00 G91 X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"
-        print(type(string2Send))
+        self.s.flushInput()                                             # Remove data from input buffer
+        string2Send="G00 G91 X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     # Translate X,Y,Z coordinates into G-code
+        print("Sending :{}".format(string2Send))                        # Write to the user what G-code is sent to the 3D-mill
+        self.s.write(string2Send.encode())                              # Send g-code block to grbl (the 3D-mill)
+        grbl_out = self.s.readline()                                    # Wait for grbl response with carriage return
+        print(" : " + grbl_out.decode().strip())  
+        
+    # The Status method is checking if the 3D-mill is doing something or not
+    # ------------------------------------
+
+    def Status(self):
+        self.s.flushInput()                              # Remove data from input buffer
+        string2Send="?"                                  # This G-code input ask to the 3D-mill what is his state 
         print("Sending :{}".format(string2Send))
         self.s.write(string2Send.encode())
-        grbl_out = self.s.readline() 
-        print(" : " + grbl_out.decode().strip())
-        
-    def WaitForIdle(self):
-        CNC.Statut(self)
-        while self.B[0].strip("<")=="Run":
-            print("Wait")
-            time.sleep(2)
-            CNC.Statut(self)
+        grbl_out=self.s.readline()                      # The typical answer is: <Idle|MPos:0.000,0.000,0.000|FS:0,0|WCO:0.000,0.000,0.000>
+        A=grbl_out.decode().strip()                     # We just want the state so we will cut the message in 4 
+        caractere = "|";                                # by using .split 
+        self.B=A.split(caractere)
+        print("Printer State : "+self.B[0].strip("<"))  # We print the first part of the message wich is the state of the 3D-mill                
 
+    # The WaitForIdle method wait 2 sec if the 3D-mill is already working
+    # -----------------------------------
+         
+    def WaitForIdle(self):
+        CNC.Statut(self)                                # Check the state of the device
+        while self.B[0].strip("<")=="Run":              # While the state is run istead of idle 
+            print("Wait")                               # we wait 2 sec
+            time.sleep(2)
+            CNC.Statut(self)                            # Check if the statut has changed
+
+    # Set the starting coordinates of the 3D-mill
+    # --------------------------------------
+            
     def Homing(self):
         string2Send="G00 G90 X0 Y0 Z0\n"
         print("Sending :{}".format(string2Send))
@@ -63,16 +88,8 @@ class CNC:
         grbl_out = self.s.readline() 
         print(" : " + grbl_out.decode().strip())
         
-    def Status(self):
-        self.s.flushInput()
-        string2Send="?"
-        print("Sending :{}".format(string2Send))
-        self.s.write(string2Send.encode())
-        grbl_out=self.s.readline()
-        A=grbl_out.decode().strip()
-        caractere = "|";
-        self.B=A.split(caractere)
-        print("Printer State : "+self.B[0].strip("<"))
+    # Read the Mpos of the 3D-mill
+    # -------------------------------------
         
     def Read_MPos(self):
         self.s.flushInput()
@@ -83,8 +100,11 @@ class CNC:
         A=grbl_out.decode().strip()
         caractere="|"
         M=A.split(caractere)
-        print(M[1])
+        print(M[1])                 # We print the second part of the message wich is the Mpos of the 3D-mill
 
+    # Read the Wpos of the 3D-mill
+    # -------------------------------------
+        
     def Read_WPos(self):
         self.s.flushInput()
         string2Send="?"
@@ -94,8 +114,11 @@ class CNC:
         E=grbl_out.decode().strip()
         caractere="|"
         W=E.split(caractere)
-        print(W[3])
-   
+        print(W[3])                   # We print the fourth part of the message wich is the Wpos of the 3D-mill
+        
+    # Read the FS of the 3D-mill
+    # -------------------------------------   
+        
     def FS(self):
         self.s.flushInput()
         string2Send="?"
@@ -105,7 +128,13 @@ class CNC:
         A=grbl_out.decode().strip()
         caractere="|"
         F=A.split(caractere)
-        print(F[2])
+        print(F[2])                 # We print the third part of the message wich is the Wpos of the 3D-mill
+        
+        
+    # The CloseConnection method is closing the serial communication port.
+    # The time delay of 5s is important tobe sure that all the instruiction 
+    # has been executed.
+    # ----------------------------------
         
     def CloseConnection(self):
         try:
@@ -114,7 +143,7 @@ class CNC:
             print("Port "+self.port+" closed")
         except AttributeError:
             print("The port "+self.port+" can't be closed")
-            
+             
 
 if __name__ == "__main__":
 

@@ -1,8 +1,0 @@
-Testé le programme bCNC
-Imprimantye fonctionne coreccetement et répond au g code 
-commandes demandées : Déplacement horizontal , rotations, reset du posiotionnement (G28)
-Comprendre pk le code python marche pas
-Test effecctués : même code avec g minuscule a la place de G majuscule 
-Test avec une seule commandes
-Recherches sur le github grbl0
-Ajout d'une commande de temps dans la boucle -> imprimante exécute les commandes dans le programme python,

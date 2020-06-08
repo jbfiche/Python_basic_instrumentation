@@ -1,7 +1,0 @@
-class Initialisation:
-    nombredelignes=0
-    def __init__(self,X,Y):
-        self.CoordonneesX="X"+str(X)
-        self.CoordonneesY="Y"+str(Y)
-        self.Gcode='G00 G91 X'+str(X)+" Y"+str(Y)+"\r\n"
-        Initialisation.nombredelignes += 1
