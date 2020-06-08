@@ -4,10 +4,10 @@ Created on Wed May 27 14:24:47 2020
 
 @author: Aymerick Reinders
 
-The CNC class is used to control a 3D-mill instrument using G-codes ... blablabla
+The CNC class is used to control a 3D-mill instrument using G-codes. The 
+following methods are the most basic functions that are neede to interact with
+the device.
 
-Tu dois donner ici des explications d'ordre général sur le but de la classe
-et quel type d'instrument elle contrôle'
 """
 
 import time
@@ -25,9 +25,8 @@ class CNC:
     
     # The OpenConnection method is opening the serial communication port and 
     # keeps the output in self.
-    # The time delay of 2s is important to keep for the initialization, else
-    # the communication will not be established properly and it won't be 
-    # possible to control the 3D-mill.
+    # The time delay of 2s is important to keep, else the communication will 
+    # not be established and it won't be possible to control the 3D-mill.
     # When an error occurs, Python will normally stop and generate an error message.
     # We will change this message by using "try" and "except"
     # --------------------------------
@@ -42,9 +41,10 @@ class CNC:
             print("The port "+self.port+" is already opened or is not connected ")
             pass
         
-    # The Move method is sending instructions to the 3D-mill in order to move the device
-    # The user must inform the coordinates
-    # ------------------------------------
+    # The Move method is sending instructions to the 3D-mill in order to 
+    # change the positions of the motors.The user must indicate the 
+    # X,Y,Z coordinates as input.
+    # ---------------------------
    
     def Move(self,X,Y,Z):
         self.s.flushInput()                                             # Remove data from input buffer
@@ -66,17 +66,17 @@ class CNC:
         A=grbl_out.decode().strip()                     # We just want the state so we will cut the message in 4 
         caractere = "|";                                # by using .split 
         self.B=A.split(caractere)
-        print("Printer State : "+self.B[0].strip("<"))  # We print the first part of the message wich is the state of the 3D-mill                
+        print("Printer State : "+self.B[0].strip("<"))  # We print the first part of the message which is the state of the 3D-mill                
 
     # The WaitForIdle method wait 2 sec if the 3D-mill is already working
-    # -----------------------------------
+    # -------------------------------------------------------------------
          
     def WaitForIdle(self):
-        CNC.Statut(self)                                # Check the state of the device
-        while self.B[0].strip("<")=="Run":              # While the state is run istead of idle 
+        CNC.Status(self)                                # Check the state of the device
+        while self.B[0].strip("<")=="Run":              # Wait until the status is no longer "run"
             print("Wait")                               # we wait 2 sec
             time.sleep(2)
-            CNC.Statut(self)                            # Check if the statut has changed
+            CNC.Status(self)                            # Check if the status has changed
 
     # Set the starting coordinates of the 3D-mill
     # --------------------------------------
@@ -88,8 +88,8 @@ class CNC:
         grbl_out = self.s.readline() 
         print(" : " + grbl_out.decode().strip())
         
-    # Read the Mpos of the 3D-mill
-    # -------------------------------------
+    # Read the machine position (Mpos - absolute position) of the 3D-mill
+    # -------------------------------------------------------------------
         
     def Read_MPos(self):
         self.s.flushInput()
@@ -102,8 +102,8 @@ class CNC:
         M=A.split(caractere)
         print(M[1])                 # We print the second part of the message wich is the Mpos of the 3D-mill
 
-    # Read the Wpos of the 3D-mill
-    # -------------------------------------
+    # Read the working position (Wpos - relative position) of the 3D-mill
+    # -------------------------------------------------------------------
         
     def Read_WPos(self):
         self.s.flushInput()
