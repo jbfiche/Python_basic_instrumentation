@@ -1,10 +1,8 @@
 Port COM4 ouvert
 Sending :G90 X0 Y0 Z0
  : ok
-Sending :G00 G91 X18 Y5 Z3
+Sending :G00 G90 X200 Y5 Z3
  : ok
-Sending :G00 G91 X-18 Y5 Z3
- : error in the coordinates entered
 Sending :G90 X0 Y0 Z0
  : ok
 Port COM4 closed

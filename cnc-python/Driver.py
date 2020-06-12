@@ -16,16 +16,15 @@ The CNC class is used to control a 3D-mill instrument using G-codes. The
 following methods are the most basic functions that are neede to interact with
 the device.
 
-X va de 0 à 295
-Y va de 0 à 145
-Z va de 0 à 45
 
 """
 
-Dictionnaire={}
-Dictionnaire["Xlimit"]="X value must be between 0 and 295 mm"
-Dictionnaire["Ylimit"]="Y value must be between 0 and 145 mm"
-Dictionnaire["Zlimit"]="Z value must be between 0 and 45 mm"
+MotorLimit={}
+MotorLimit["XhighMM"]=295.0
+MotorLimit["YhighMM"]=145.0
+MotorLimit["ZhighMM"]=45.0
+MotorLimit["Absolute"]=90
+MotorLimit["Relative"]=91
 
 import time
 import serial
@@ -47,8 +46,8 @@ class CNC:
 
         """
         self.port = port  
-        self.historique=open("historique.txt","w")
-        self.Dico={}
+        self.log_file=open("log_file.txt","w")
+        self.PrinterState={}
         return
 
     def OpenConnection(self):
@@ -67,12 +66,12 @@ class CNC:
         """
         try:                                            # The try block lets you test a block of code for errors.
             self.s  = serial.Serial(self.port,115200);  # Open the port and keeps the output in self.s
-            self.historique.write("Port "+self.port+" ouvert\n")
+            self.log_file.write("Port "+self.port+" ouvert\n")
             time.sleep(2)
             self.s.flushInput()                         # Remove data from input buffer
         except serial.SerialException:                  # The except block lets you handle the error.
             print("The port "+self.port+" is already opened or is not connected ")
-            self.historique.write("The port "+self.port+" is already opened or is not connected ")
+            self.log_file.write("The port "+self.port+" is already opened or is not connected ")
             pass
 
     def Homing(self):
@@ -85,10 +84,11 @@ class CNC:
 
         """
         string2Send="G90 X0 Y0 Z0\n"
-        self.historique.write("Sending :{}".format(string2Send))
+        self.log_file.write("Sending :{}".format(string2Send))
         self.s.write(string2Send.encode())
         grbl_out = self.s.readline() 
-        self.historique.write(" : " + grbl_out.decode().strip()+"\n")    
+        self.log_file.write(" : " + grbl_out.decode().strip()+"\n")  
+        CNC.WaitForIdle(self)
         
 
     def Status(self):
@@ -106,9 +106,11 @@ class CNC:
         grbl_out=self.s.readline()                      # The typical answer is: <Idle|MPos:0.000,0.000,0.000|FS:0,0|WCO:0.000,0.000,0.000>
         A=grbl_out.decode().strip()                     # We just want the state so we will cut the message in 4 
         caractere = "|";                                # by using .split 
-        self.B=A.split(caractere)
-        # print("Printer State : "+self.B[0].strip("<"))  # We print the first part of the message which is the state of the 3D-mill                
-
+        B=A.split(caractere)
+        self.PrinterState["State"]=B[0]
+        self.PrinterState["MPos"]=B[1]
+        self.PrinterState["FS"]=B[2]
+        self.PrinterState["WPos"]=B[1]
          
     def WaitForIdle(self):
         """
@@ -119,15 +121,15 @@ class CNC:
         None.
 
         """
-        CNC.Status(self)                                # Check the state of the device
+        CNC.Status(self)                                                 # Check the state of the device
         WaitingTime=0                              
-        while self.B[0].strip("<")=="Run":              # Wait until the status is no longer "run"
-            time.sleep(0.1)                             # we wait 100 msec
-            CNC.Status(self)                            # Check if the status has changed
+        while self.PrinterState["State"].strip("<")=="Run":              # Wait until the status is no longer "run"
+            time.sleep(0.1)                                              # we wait 100 msec
+            CNC.Status(self)                                             # Check if the status has changed
             WaitingTime=WaitingTime+0.1
-            if WaitingTime >= 10.0:
+            if WaitingTime >= 15.0:
                 print("There is an error")
-                self.historique.write("There is an error \n")
+                self.log_file.write("There is an error, Timeout \n")
                 break
             
                       
@@ -154,21 +156,52 @@ class CNC:
         """
         if G != 90 and G!=91:
             print("Wrong value for G. Muste be 90 or 91")
-            self.historique.write("Wrong value for G. Muste be 90 or 91\n")
-        if 0<=X<=295 and 0<=Y<=145 and 0<=Z<=45:
-            self.s.flushInput()                                             # Remove data from input buffer
-            string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     # Translate X,Y,Z coordinates into G-code
-            self.historique.write("Sending :{}".format(string2Send))                        # Write to the user what G-code is sent to the 3D-mill
-            self.s.write(string2Send.encode())                              # Send g-code block to grbl (the 3D-mill)
-            grbl_out = self.s.readline()                                    # Wait for grbl response with carriage return
-            self.historique.write(" : " + grbl_out.decode().strip()+"\n")
-            return G,X,Y,Z
-        else :
-            print("error in the coordinates entered")
-            string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
-            self.historique.write("Sending :{}".format(string2Send))
-            self.historique.write(" : error in the coordinates entered\n")
-        
+            self.log_file.write("Wrong value for G. Muste be 90 or 91\n")
+        if G==90 :    
+            if 0.0<=X<=295.0 and 0.0<=Y<=145.0 and 0.0<=Z<=45.0:
+                self.s.flushInput()                                                         # Remove data from input buffer
+                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"         # Translate X,Y,Z coordinates into G-code
+                self.log_file.write("Sending :{}".format(string2Send))                      # Write to the user what G-code is sent to the 3D-mill
+                self.s.write(string2Send.encode())                                          # Send g-code block to grbl (the 3D-mill)
+                grbl_out = self.s.readline()                                                # Wait for grbl response with carriage return
+                self.log_file.write(" : " + grbl_out.decode().strip()+"\n")
+                CNC.WaitForIdle(self)
+                return G,X,Y,Z
+            else :
+                print("error in the coordinates entered")
+                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
+                self.log_file.write("Sending :{}".format(string2Send))
+                self.log_file.write(" : error in the coordinates entered\n")
+                
+        if G==91:
+            CNC.Status(self)
+            A=self.PrinterState["MPos"].strip("MPos:")                                  # Check the absolute cooridinates of the printer
+            caractere=","
+            B=A.split(caractere)
+            X1=float(B[0])+float(X)
+            Y1=float(B[1])+float(Y)
+            Z1=float(B[2])+float(Z)
+            if X1<=0.0 or Y1<=0.0 or Z1<=0.0:
+                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
+                self.log_file.write("Sending :{}".format(string2Send))
+                self.log_file.write(" : error in the coordinates entered X:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
+                print("error in the coordinates entered")
+            elif X1>=295.0 or Y1>=145.0 or Z1>=45.0:
+                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
+                self.log_file.write("Sending :{}".format(string2Send))
+                self.log_file.write(" : error in the coordinates enteredX:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
+                print("error in the coordinates entered")
+            else:
+                self.s.flushInput()                                                      # Remove data from input buffer
+                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"      # Translate X,Y,Z coordinates into G-code
+                self.log_file.write("Sending :{}".format(string2Send))                   # Write to the user what G-code is sent to the 3D-mill
+                self.s.write(string2Send.encode())                                       # Send g-code block to grbl (the 3D-mill)
+                grbl_out = self.s.readline()                                             # Wait for grbl response with carriage return
+                self.log_file.write(" : " + grbl_out.decode().strip()+"\n")
+                CNC.WaitForIdle(self)
+                return G,X,Y,Z
+                                
+                
     def Read_MPos(self):
         """
         Read the machine position (Mpos - absolute position) of the 3D-mill
@@ -179,14 +212,8 @@ class CNC:
 
         """
         self.s.flushInput()
-        string2Send="?"
-        print("Sending :{}".format(string2Send))
-        self.s.write(string2Send.encode())
-        grbl_out=self.s.readline()
-        A=grbl_out.decode().strip()
-        caractere="|"
-        M=A.split(caractere)
-        print(M[1])                 # We print the second part of the message wich is the Mpos of the 3D-mill
+        CNC.Status(self)
+        print(self.PrinterState["MPos"])       
 
         
     def Read_WPos(self):
@@ -199,14 +226,8 @@ class CNC:
 
         """
         self.s.flushInput()
-        string2Send="?"
-        print("Sending :{}".format(string2Send))
-        self.s.write(string2Send.encode())
-        grbl_out=self.s.readline()
-        E=grbl_out.decode().strip()
-        caractere="|"
-        W=E.split(caractere)
-        print(W[3])                  # We print the fourth part of the message wich is the Wpos of the 3D-mill
+        CNC.Status(self)
+        print(self.PrinterState["WPos"])                  
         
         
     def FS(self):
@@ -219,14 +240,8 @@ class CNC:
 
         """
         self.s.flushInput()
-        string2Send="?"
-        print("Sending :{}".format(string2Send))
-        self.s.write(string2Send.encode())
-        grbl_out=self.s.readline()
-        A=grbl_out.decode().strip()
-        caractere="|"
-        F=A.split(caractere)
-        print(F[2])                 # We print the third part of the message wich is the Wpos of the 3D-mill
+        CNC.Status(self)
+        print(self.PrinterState["FS"])                 
   
         
     def CloseConnection(self):
@@ -242,13 +257,13 @@ class CNC:
         """
         try:
             time.sleep(2)
-            self.historique.write("Port "+self.port+" closed")
-            self.historique.close()
+            self.log_file.write("Port "+self.port+" closed")
+            self.log_file.close()
             self.s.close()
         except AttributeError:
             print("The port "+self.port+" can't be closed")
-            self.historique.write("The port "+self.port+" can't be closed")
-            self.historique.close()
+            self.log_file.write("The port "+self.port+" can't be closed")
+            self.log_file.close()
              
 
 if __name__ == "__main__":
@@ -256,15 +271,9 @@ if __name__ == "__main__":
     cnc = CNC('COM4')
     cnc.OpenConnection()
     cnc.Homing()
-    cnc.Move(91,18,5,3)
-    cnc.WaitForIdle()
-    cnc.Read_MPos()
-    cnc.Move(91,-18,5,3)
-    cnc.WaitForIdle()
+    cnc.Move(90,200,5,3)
     cnc.Read_MPos()
     cnc.Homing()
-    cnc.WaitForIdle()
-    print(Dictionnaire["Xlimit"])
     cnc.CloseConnection()
     
 
