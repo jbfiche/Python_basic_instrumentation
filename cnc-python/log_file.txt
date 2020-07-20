@@ -1,8 +1,1 @@
-Port COM4 ouvert
-Sending :G90 X0 Y0 Z0
- : ok
-Sending :G00 G90 X200 Y5 Z3
- : ok
-Sending :G90 X0 Y0 Z0
- : ok
-Port COM4 closed
+Port /dev/ttyUSB0 opened

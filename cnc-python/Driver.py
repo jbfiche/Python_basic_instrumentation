@@ -66,12 +66,13 @@ class CNC:
         """
         try:                                            # The try block lets you test a block of code for errors.
             self.s  = serial.Serial(self.port,115200);  # Open the port and keeps the output in self.s
-            self.log_file.write("Port "+self.port+" ouvert\n")
+            self.log_file.write("Port "+self.port+" opened\n")
             time.sleep(2)
             self.s.flushInput()                         # Remove data from input buffer
         except serial.SerialException:                  # The except block lets you handle the error.
             print("The port "+self.port+" is already opened or is not connected ")
             self.log_file.write("The port "+self.port+" is already opened or is not connected ")
+            self.log_file.close()                       #To be sure the message is written
             pass
 
     def Homing(self):
@@ -168,7 +169,7 @@ class CNC:
                 CNC.WaitForIdle(self)
                 return G,X,Y,Z
             else :
-                print("error in the coordinates entered")
+                print("Error in the coordinates entered")
                 string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
                 self.log_file.write("Sending :{}".format(string2Send))
                 self.log_file.write(" : error in the coordinates entered\n")
@@ -181,15 +182,15 @@ class CNC:
             X1=float(B[0])+float(X)
             Y1=float(B[1])+float(Y)
             Z1=float(B[2])+float(Z)
-            if X1<=0.0 or Y1<=0.0 or Z1<=0.0:
+            if X1<0.0 or Y1<0.0 or Z1<0.0:
                 string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
                 self.log_file.write("Sending :{}".format(string2Send))
                 self.log_file.write(" : error in the coordinates entered X:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
-                print("error in the coordinates entered")
-            elif X1>=295.0 or Y1>=145.0 or Z1>=45.0:
+                print("Error in the coordinates entered")
+            elif X1>295.0 or Y1>145.0 or Z1>45.0:
                 string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
                 self.log_file.write("Sending :{}".format(string2Send))
-                self.log_file.write(" : error in the coordinates enteredX:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
+                self.log_file.write(" : Error in the coordinates enteredX:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
                 print("error in the coordinates entered")
             else:
                 self.s.flushInput()                                                      # Remove data from input buffer
@@ -268,12 +269,16 @@ class CNC:
 
 if __name__ == "__main__":
 
-    cnc = CNC('COM4')
+    cnc = CNC('/dev/ttyUSB0')
     cnc.OpenConnection()
     cnc.Homing()
-    cnc.Move(90,200,5,3)
-    cnc.Read_MPos()
-    cnc.Homing()
+    a=[91,0,0,0]
+    b=a[0]
+    c=a[1]
+    d=a[2]
+    e=a[3]
+    cnc.Move(b,c,d,e)
+#    cnc.Homing()
     cnc.CloseConnection()
     
 
