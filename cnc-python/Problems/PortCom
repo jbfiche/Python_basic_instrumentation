@@ -1,0 +1,42 @@
+If you encounter a problem with the USB/RS232 communication with your device, this file might help you:
+
+---------------------------------
+
+Prob : I can't identify the name of the port where my device is pluged
+ 
+In Windows : - Go to your peripherals 
+	     - Check witch one is already used (for example 'COM1' and 'COM4')
+	     - Unplug your device (for example 'COM4' disapear -> Your device is plug at the port 4)
+	     
+In Linux:    (USB Case) :
+	     - Open a terminal command
+	     - Write "ls /dev/tty*"
+	     - Unplug your device
+	     - Write "ls /dev/tty*" again
+	     - See the name of the port wich disapeared
+	     
+	     (RSB 232 Case) In this case start with this device unpluged 
+	     - Open a terminal command
+	     - Write " dmesg | grep ttyS"
+	     (You will get a list of ports)
+	     - Write "sudo cat /proc/tty/driver/serial> /tmp/1"
+	     - Plug your device
+	     - Write "sudo cat /proc/tty/driver/serial> /tmp/2"
+	     - Write "diff /tmp/1 /tmp/2"
+	     - By comparating the result with the dmesg output we can determine wich one is the port
+	     
+	     (More Information here : https://unix.stackexchange.com/questions/125183/how-to-find-which-serial-port-is-in-use)
+	     
+-----------------------------------
+
+Prob : Error 13 : Permission Denied 
+
+I had this problem only with linux so this solution is specific to linux. The problem here is you are not in the dialout group.
+To add yourself to this goup you have to :
+	- Open a terminal command
+	- Write "sudo usermod -a -G dialout <username>"
+	where <username> is your Linux user name
+	- You will need to log out and log in again for this change to take effect !!!
+
+If this change work you should see your user name in dialout when u write "groups" in a terminal command (Result expected : <username> adm tty dialout sudo
+
