@@ -71,9 +71,9 @@ class Valve:
             self.s.flushInput()                                         # Remove data from input buffer
             status=Config.ValveNB[i]+"F\r"                              # This str input ask to the current valve his state
             self.s.write(status.encode())                               # Send the command to the device encoded in UTF-8 
-            Line1=self.s.read()                                         # First live give us useless information so we will not use it
+            Line1=self.s.read()                                         # First line give us useless information so we will not use it
             Output=self.s.read()                                        # Return "*" if the valve is busy "Y" if the valve is idle
-            self.ValveState["State"+Config.ValveNB[i]]=Output.decode()  # Save the state ofthe current valve in the dictionnary
+            self.ValveState["State"+Config.ValveNB[i]]=Output.decode()  # Save the state of the current valve in the dictionnary
      
     def WaitForIdle(self):
         """
@@ -96,12 +96,25 @@ class Valve:
                     break
 
     def ValvePosition(self,MD):
-        self.s.flushInput()
-        Position=str(MD)+"LQP\r"
-        self.s.write(Position.encode())
-        Line1=self.s.read()
-        Output=self.s.read()
-        self.ValveState["CurrentPosition"+str(MD)]=Output.decode()
+        """
+        The ValvePosition method is asking to a specific valve is current position. 
+        The user must indicate the name of the valve (Module adress). 
+        
+
+        Parameters
+        ----------
+        MD : Module adress
+        
+        Returns
+        -------
+
+        """
+        self.s.flushInput()                                              # Remove data from input buffer
+        Position=str(MD)+"LQP\r"                                         # This str input ask to the valve is current position
+        self.s.write(Position.encode())                                  # Send the command to the device encoded in UTF-8
+        Line1=self.s.read()                                              # First line give us useless information so we will not use it
+        Output=self.s.read()                                             # Return the position of the valve (For example : "3" if the valve is in position 3)
+        self.ValveState["CurrentPosition"+str(MD)]=Output.decode()       # Save the position of the valve in the dictionnary
 
 
     def ValveRotation(self,MD,pp):    

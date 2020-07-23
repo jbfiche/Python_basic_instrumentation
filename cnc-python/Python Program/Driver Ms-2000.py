@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 """
 Created on Tue Jul 21 10:38:11 2020
 
-@author: admin
+@author: aymerick
 
 The MS2000 class is used to control a translation plate using specific-codes. The 
 following methods are the most basic functions that are neede to interact with
@@ -209,6 +209,21 @@ class MS2000:
         self.s.flushInput()                           # Remove data from input buffer
         string2Send="S X="+str(X)+" Y="+str(Y)+"\r"   # This str input change the movement speed of the device
         self.s.write(string2Send.encode())            # Send the input to the MS2000 encoded in UTF-8
+        
+    def LED(self,brightness):
+        """
+        The LED method sets the brightness of the LED.
+        The value of brightness must be between 0 and 99
+
+        Returns
+        -------
+        None.
+
+        """
+        if 0<=brightness<=99:
+            self.s.flushInput()                        # Remove data from input buffer
+            string2Send="LED["+str(brightness)+"]\r"   # This str input change the brightness of the LED
+            self.s.write(string2Send.encode())         # Send the input to the MS2000 encoded in UTF-8
                 
     def CloseConnection(self):
         """
