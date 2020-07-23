@@ -67,7 +67,8 @@ class Valve:
 
         """
         self.s.flushInput()                                             # Remove data from input buffer
-        for i in range (0,Config.NbofValve):                            # Check the state of each valve    
+        for i in range (0,Config.NbofValve):                            # Check the state of each valve 
+            self.s.flushInput()                                         # Remove data from input buffer
             status=Config.ValveNB[i]+"F\r"                              # This str input ask to the current valve his state
             self.s.write(status.encode())                               # Send the command to the device encoded in UTF-8 
             Line1=self.s.read()                                         # First live give us useless information so we will not use it
@@ -93,6 +94,15 @@ class Valve:
                 if WaitingTime >= 15.0:                            # If the status has not changed in 15 sec there might be an error so we stop the "while" and write an error message
                     print("There is an error")
                     break
+
+    def ValvePosition(self,MD):
+        self.s.flushInput()
+        Position=str(MD)+"LQP\r"
+        self.s.write(Position.encode())
+        Line1=self.s.read()
+        Output=self.s.read()
+        self.ValveState["CurrentPosition"+str(MD)]=Output.decode()
+
 
     def ValveRotation(self,MD,pp):    
         """
@@ -162,10 +172,11 @@ class Valve:
 if __name__ == "__main__":
     a=Valve()
     a.OpenConnection()
-    a.ValveRotation("a",1)
     a.ValveRotation("a",2)
-    a.ValveRotation("a",7)
-    a.ValveRotation("a",1)
-    a.ValveRotation("a",5)
+    a.ValveRotation("b",2)
+    a.ValveRotation("c",2)
     a.ValveRotation("a",6)
+    a.ValvePosition("a")
+    # a.ValveRotation("a",5)
+    # a.ValveRotation("a",6)
 
