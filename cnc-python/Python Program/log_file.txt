@@ -1,1 +1,16 @@
-Port /dev/ttyUSB0 opened
+Port /dev/ttyUSB1 opened
+Sending :G00 G91 X13 Y13 Z0
+ : ok
+Sending :G00 G91 X0 Y0 Z-2
+ : ok
+Sending :G00 G91 X0 Y0 Z2
+ : ok
+Sending :G00 G91 X0 Y26 Z0
+ : ok
+Sending :G00 G91 X0 Y0 Z-2
+ : ok
+Sending :G00 G91 X0 Y0 Z2
+ : ok
+Sending :G00 G91 X-13 Y-39 Z0
+ : ok
+Port /dev/ttyUSB1 closed

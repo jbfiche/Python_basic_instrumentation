@@ -13,6 +13,7 @@ from Driver import CNC    #Import the class CNC from Driver.py
 import time               
 import Config             #Import the parameters from Config.py
 
+
 """
 
 The Wells class is used to control a 3D-mill instrument using G-codes. The 
@@ -42,11 +43,11 @@ class Wells:
       self.cnc=CNC(self.port)                                      # Call the class CNC
       self.cnc.OpenConnection()                                    # Open the Connection with the device
       self.NbWells=0                                               # Count the number of wells 
+      Wells.Wells_1(self)
 
     def Wells_1(self):
       """
-      The Wells_1 method move the device to the Wells_1 depending of his coordinates in Config.py.
-      We Move in absolute coordinates. Don't use it if you are already on the Wells 1 (Waste of time).
+      The Wells_1 method ask to the user if the printer is above the Wells_1.
 
       Parameters
       ----------
@@ -57,10 +58,14 @@ class Wells:
       None.
 
       """      
-      self.cnc.Move(90,0,0,Config.ZWell_1)                                      # Move to target coordinates in Z first so the movement will be like this : ↑→ instead of : ↗ (It's safer)       
-      self.cnc.Move(90,Config.XWell_1,Config.YWell_1,Config.ZWell_1)            # Move to target coordinates in X,Y,Z                                         
-
-      
+      StartingPoint=input("Is the 3d-mill above the wells 1 [Y/N] ? ")                                        # Ask the user if the printer is ready to go 
+      if StartingPoint == "Y" or StartingPoint==' Y' or StartingPoint=='y' or StartingPoint==' y':            # Check the response of the user
+        self.Coord["ReadyToGo"]="YES"                                                                         # Say to the next instructions that we are ready to manipulate
+      else :
+          self.Coord["ReadyToGo"]="NO"                                                                        # Say to the next instructions that we are not ready to manipulate
+          print("Go check 3d-millcoordinates.txt if you want to move the 3d-mill towards the wells_1")        # print the error message
+          self.cnc.CloseConnection()                                                                          # Close the connection
+    
     def CoordWells(self):
       """
       Calculate the relative coordinates of the wells depending of the starting point (Wells 1).
@@ -107,16 +112,19 @@ class Wells:
           self.TargetWells=TargetWells                                                                          # Save the value of the TargetWells in self.TargetWells
           Wells.CheckValue(self)                                                                                # Check if the Well is within limits
           Wells.CoordWells(self)                                                                                # Caluclate the relative coordinates of the wells from Wells 1
-          if self.Coord["Outrange"]=="Values within limits":                                                        # Check if the value is fine 
+          if self.Coord["Outrange"]=="Values within limits" and self.Coord["ReadyToGo"]=="YES" :                     # Check if the value is fine and if we are ready to manipulate
               if self.FirstMove==0:                                                                                 # If this is the first movement 
                   self.FirstMove=1                                                                                  # Change the value of FirstMove
                   self.cnc.Move(91,self.Coord['Xwell 0'] ,self.Coord['Ywell 0'],0)                                  # Move the 3d-mill to the wells in relative movement
+                  self.cnc.Move(91,0,0,-2)
               else:                                                                                                 # If this is not the first movement, the relative movement will depend of the current position of the device
+                  self.cnc.Move(91,0,0,2)
                   X=self.Coord['Xwell '+str(self.NbWells-1)]-self.Coord['Xwell '+str(self.NbWells-2)]               # Calculate the relative movement in X depending of the target position and the current poisiotn of the device
                   Y=self.Coord['Ywell '+str(self.NbWells-1)]-self.Coord['Ywell '+str(self.NbWells-2)]               # Calculate the relative movement in Y depending of the target position and the current poisiotn of the device
                   self.cnc.Move(91,X,Y,0)                                                                           # Move the 3d-mill to the wells in relative movement
+                  self.cnc.Move(91,0,0,-2)
       except KeyError:
-          print('')            
+          pass
                 
     def CheckValue(self):
       """
@@ -157,17 +165,22 @@ class Wells:
       None.
       
       """
-      if self.NbWells>>0:    
-          self.cnc.Move(91,-self.Coord['Xwell '+str(self.NbWells-1)],-self.Coord['Ywell '+str(self.NbWells-1)],0)    # Move the printer back to the Wells_1
-      self.cnc.CloseConnection()                                                                                     # Close the connection with the 3d-mill
+      try:
+          if self.NbWells>>0 and self.Coord["ReadyToGo"]=="YES" :   
+              self.cnc.Move(91,0,0,2)
+              self.cnc.Move(91,-self.Coord['Xwell '+str(self.NbWells-1)],-self.Coord['Ywell '+str(self.NbWells-1)],0)    # Move the printer back to the Wells_1
+          self.cnc.CloseConnection()                                                                                     # Close the connection with the 3d-mill
+      except ValueError:
+          pass
               
           
             
 if __name__ == "__main__":  
     Test = Wells()       
     Test.MoveWells(7)
-    Test.MoveWells(10)
-    Test.MoveWells(84)
+    time.sleep(2)
+    Test.MoveWells(9)
+    time.sleep(2)
     Test.CloseConnection()
 
 

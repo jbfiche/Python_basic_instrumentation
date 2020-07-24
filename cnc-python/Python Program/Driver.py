@@ -28,6 +28,7 @@ MotorLimit["Relative"]=91
 
 import time
 import serial
+import Config
 
 class CNC:
     
@@ -38,14 +39,14 @@ class CNC:
 
         Parameters
         ----------
-        port : Name of the port where the printer is connected
+        None.
 
         Returns
         -------
         None.
 
         """
-        self.port = port  
+        self.port=port
         self.log_file=open("log_file.txt","w")
         self.PrinterState={}
         return
@@ -115,7 +116,7 @@ class CNC:
          
     def WaitForIdle(self):
         """
-        The WaitForIdle method wait 2 sec if the 3D-mill is already working
+        The WaitForIdle method wait 0.1 sec if the 3D-mill is already working
 
         Returns
         -------
@@ -159,7 +160,7 @@ class CNC:
             print("Wrong value for G. Muste be 90 or 91")
             self.log_file.write("Wrong value for G. Muste be 90 or 91\n")
         if G==90 :    
-            if 0.0<=X<=295.0 and 0.0<=Y<=145.0 and 0.0<=Z<=45.0:
+#            if 0.0<=X<=295.0 and 0.0<=Y<=145.0 and 0.0<=Z<=45.0:
                 self.s.flushInput()                                                         # Remove data from input buffer
                 string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"         # Translate X,Y,Z coordinates into G-code
                 self.log_file.write("Sending :{}".format(string2Send))                      # Write to the user what G-code is sent to the 3D-mill
@@ -168,31 +169,31 @@ class CNC:
                 self.log_file.write(" : " + grbl_out.decode().strip()+"\n")
                 CNC.WaitForIdle(self)
                 return G,X,Y,Z
-            else :
-                print("Error in the coordinates entered")
-                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
-                self.log_file.write("Sending :{}".format(string2Send))
-                self.log_file.write(" : error in the coordinates entered\n")
+#            else :
+#                print("Error in the coordinates entered")
+#                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
+#                self.log_file.write("Sending :{}".format(string2Send))
+#                self.log_file.write(" : error in the coordinates entered\n")
                 
         if G==91:
-            CNC.Status(self)
-            A=self.PrinterState["MPos"].strip("MPos:")                                  # Check the absolute cooridinates of the printer
-            caractere=","
-            B=A.split(caractere)
-            X1=float(B[0])+float(X)
-            Y1=float(B[1])+float(Y)
-            Z1=float(B[2])+float(Z)
-            if X1<0.0 or Y1<0.0 or Z1<0.0:
-                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
-                self.log_file.write("Sending :{}".format(string2Send))
-                self.log_file.write(" : error in the coordinates entered X:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
-                print("Error in the coordinates entered")
-            elif X1>295.0 or Y1>145.0 or Z1>45.0:
-                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
-                self.log_file.write("Sending :{}".format(string2Send))
-                self.log_file.write(" : Error in the coordinates enteredX:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
-                print("error in the coordinates entered")
-            else:
+#            CNC.Status(self)
+#            A=self.PrinterState["MPos"].strip("MPos:")                                  # Check the absolute cooridinates of the printer
+#            caractere=","
+#            B=A.split(caractere)
+#            X1=float(B[0])+float(X)
+#            Y1=float(B[1])+float(Y)
+#            Z1=float(B[2])+float(Z)
+#            if X1<0.0 or Y1<0.0 or Z1<0.0:
+#                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
+#                self.log_file.write("Sending :{}".format(string2Send))
+#                self.log_file.write(" : error in the coordinates entered X:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
+#                print("Error in the coordinates entered")
+#            elif X1>295.0 or Y1>145.0 or Z1>45.0:
+#                string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"     
+#                self.log_file.write("Sending :{}".format(string2Send))
+#                self.log_file.write(" : Error in the coordinates enteredX:"+str(X1)+" Y:"+str(Y1)+" Z:"+str(Z1)+"\n")
+#                print("error in the coordinates entered")
+#            else:
                 self.s.flushInput()                                                      # Remove data from input buffer
                 string2Send="G00 G"+str(G)+" X"+str(X)+" Y"+str(Y)+" Z"+str(Z)+"\n"      # Translate X,Y,Z coordinates into G-code
                 self.log_file.write("Sending :{}".format(string2Send))                   # Write to the user what G-code is sent to the 3D-mill
@@ -269,16 +270,10 @@ class CNC:
 
 if __name__ == "__main__":
 
-    cnc = CNC('/dev/ttyUSB0')
+    cnc = CNC(Config.PortPrinter)
     cnc.OpenConnection()
-    cnc.Homing()
-    a=[91,0,0,0]
-    b=a[0]
-    c=a[1]
-    d=a[2]
-    e=a[3]
-    cnc.Move(b,c,d,e)
-#    cnc.Homing()
+    cnc.Move(91,1,1,0)
+    cnc.Move(91,-1,-1,0)
     cnc.CloseConnection()
     
 
