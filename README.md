@@ -1,4 +1,4 @@
-# Python_basic_instrumentatiokn
+# Python_basic_instrumentation
 
 FILE IN THIS FOLDERS:
 
