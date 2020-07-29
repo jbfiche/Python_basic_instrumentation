@@ -13,6 +13,8 @@ the device.
 
 import serial
 import time
+import sys
+sys.path.append("Parameters of each device")                                   # Add the file Parameters of each device to the path
 import Config
 
 class Valve:
@@ -32,7 +34,7 @@ class Valve:
         """      
         self.port=Config.PortValve                            # Save the name of the port given in the "file Config.py" in "self.port"
         self.ValveState={}                                    # Create a dictionnary
-        
+
     def OpenConnection(self):
         """
         The OpenConnection method is opening the serial communication port and 
@@ -184,12 +186,12 @@ class Valve:
 
 if __name__ == "__main__":
     a=Valve()
-    a.OpenConnection()
-    a.ValveRotation("a",2)
-    a.ValveRotation("b",2)
-    a.ValveRotation("c",2)
-    a.ValveRotation("a",6)
-    a.ValvePosition("a")
+#    a.OpenConnection()
+#    a.ValveRotation("a",2)
+#    a.ValveRotation("b",2)
+#    a.ValveRotation("c",2)
+#    a.ValveRotation("a",6)
+#    a.ValvePosition("a")
     # a.ValveRotation("a",5)
     # a.ValveRotation("a",6)
 

@@ -11,6 +11,8 @@ the device.
 """
 import time
 import serial
+import sys
+sys.path.append("Parameters of each device")                                   # Add the file Parameters of each device to the path
 import Config
 
 class MS2000:

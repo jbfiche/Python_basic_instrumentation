@@ -9,9 +9,11 @@ Created on Wed Jul 15 10:15:55 2020
       *args=Number(s) of the well(s)
 """
 
-from Driver import CNC    #Import the class CNC from Driver.py
+from Driver import CNC                                                         # Import the class CNC from Driver.py
 import time               
-import Config             #Import the parameters from Config.py
+import sys
+sys.path.append("Parameters of each device")                                   # Add the file Parameters of each device to the path
+import Config                                                                  # Import the parameters from Config.py
 
 
 """

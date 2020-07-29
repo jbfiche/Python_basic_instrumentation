@@ -1,0 +1,34 @@
+If you encounter a problem when you try to import a file, this file might help you:
+
+---------------------------------
+
+Prob : ModuleNotFoundError: No module named 'Config' (FOR A PYTHON SCRIPT OR A .TXT FILE)
+
+In this case, your script can't find the file you want to import. In general, all the file are in the same deposits so there is no problem with the path.
+But if one of your file is in an other deposit you have to say it if you want to import it.
+For example, the path to "Valve.py" is ..../Python Program/Valve Control
+        and the path to "Config.py" is ..../Python Program/Parameters of each device
+So, they are not in the same folder. If I want to import "Config.py" in Valve what I have to do is :
+	
+	- import sys                                     # We will be able to change the path (default library)
+	- sys.path.append("Parameters of each device")   # Instead of looking for Config.py only in the folder "Valve Control", your script will look for this file in "Parameters of each device" too
+	- import Config				  # Import Config
+	
+If it still not working, try to put everything in the same folder
+
+----------------------------------
+
+Prob : ModuleNotFoundError: No module named 'pipython' (FOR A LIBRARY)
+
+In this case, your script can't find a library (like serial for example). There is some solutions that can help you:
+	- Try to install it with "pip" 
+
+	- Move your library to the folder where all the libraries are. Here, there is a method to find where is a module:
+		- Open a terminal
+		- Write "$ Python"
+		- Write "import <name of your module>" (For example if you installed pyserial and you want to find where he is in your disk)
+		- Write "<name of your module>" The answer will the path to this module
+		- Check if your module is in the same deposits than the others
+		- Restart Spyder
+		
+

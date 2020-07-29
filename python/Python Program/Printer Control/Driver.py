@@ -28,6 +28,8 @@ MotorLimit["Relative"]=91
 
 import time
 import serial
+import sys
+sys.path.append("Parameters of each device")                                   # Add the file Parameters of each device to the path 
 import Config
 
 class CNC:
@@ -271,10 +273,10 @@ class CNC:
 if __name__ == "__main__":
 
     cnc = CNC(Config.PortPrinter)
-    cnc.OpenConnection()
-    cnc.Move(91,1,1,0)
-    cnc.Move(91,-1,-1,0)
-    cnc.CloseConnection()
+#    cnc.OpenConnection()
+#    cnc.Move(91,1,1,0)
+#    cnc.Move(91,-1,-1,0)
+#    cnc.CloseConnection()
     
 
 
