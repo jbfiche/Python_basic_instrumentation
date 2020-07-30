@@ -188,7 +188,7 @@ if mode == 'Acquisition'or mode == 'A' or mode == 'a' :
 
 
 
-#100ms ON - 100ms OFF & 20mW
+#100ms ON - 100ms OFF
 if Acq == True :
     print ('Laser color 1 ? VIOLET = 0, BLUE = 1, CYAN = 2, TEAL = 3, GREEN = 4, RED = 5 or NIR = 6 ')
     laser_ch1 = int(input())
