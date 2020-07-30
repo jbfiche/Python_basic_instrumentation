@@ -46,3 +46,9 @@ If you want further informations about the methods check the file himself
 
 Problem : File where you can find some solutions to some problems I have encountered during the developement of this scripts
 
+----------------------------------------------------
+
+Celesta : Folder that contains current development regarding the control of the Celesta Engine Light (Lumencor).
+
+One of the files was created by Bogdan Bintu to control their Celesta through a RG45 cable, it is called "celesta.py". It was used as a base to control our own.
+The code called "control_celesta.py" will be used to modulate the lasers in sync with the camera ORCA Flash 4.0.
