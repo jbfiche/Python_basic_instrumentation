@@ -33,16 +33,16 @@ class LumencorLaser(object):
         self.ip = kwds.get('ip', '192.168.201.200')
         self.laser_id = str(kwds.get('laser_id', 0))
         [self.pmin, self.pmax] = 0,1000
-#        try:
-#            # See if the system returns back the right IP.
-#            self.message = self.getIP()
-#            assert (self.message['message'] == 'A IP '+self.ip)
-#            assert (int(self.laser_id)<self.getNumberLasers())
-#            self.live = True
-#        except:
-#            print(traceback.format_exc())
-#            self.live = False
-#            print("Failed to connect to Lumencor Laser at ip:", self.ip)
+        try:
+            # See if the system returns back the right IP.
+            self.message = self.getIP()
+            assert (self.message['message'] == 'A IP '+self.ip)
+            assert (int(self.laser_id)<self.getNumberLasers())
+            self.live = True
+        except:
+            print(traceback.format_exc())
+            self.live = False
+            print("Failed to connect to Lumencor Laser at ip:", self.ip)
 
         if self.live:
             [self.pmin, self.pmax] = self.getPowerRange()
@@ -50,7 +50,8 @@ class LumencorLaser(object):
             if (not self.getLaserOnOff()):
                 self.setLaserOnOff(False)
 
-    # def getNumberLasers(self):
+# WORK IN PROGRESS
+#    def getNumberLasers(self):
     #     """
     #     Returns the number of lasers inside the celesta
     #     """
@@ -154,8 +155,6 @@ class LumencorLaser(object):
    
 
 
-
-
 # if (__name__ == "__main__"):
 #     import time
 #     obj = LumencorLaser(laser_id=0,ip = '192.168.201.200')
@@ -233,3 +232,27 @@ if Calib == True :
         if KeyboardInterrupt :
             laser_color.shutDown()
             break
+
+#
+# The MIT License
+#
+# Copyright (c) 2013 Zhuang Lab, Harvard University
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
