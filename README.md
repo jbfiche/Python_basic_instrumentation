@@ -18,11 +18,6 @@ Methods in Driver :
 	-Move
 If you want further informations about the methods check the file himself
 
-----------------------------------------------------
-
-log_file : Historic of instruction send to the 3d-mill. If the printer seems to be not working when u send a list of instruction, chek the file to be sure there is not a problem with your script. For example if u open two times the communication with the device.
-
-----------------------------------------------------
 
 Wells : Program to move the 3D-mill to specific wells. This script use the class CNC created in Driver to move the 3d-mill.
 Methods in Wells:
@@ -31,6 +26,10 @@ Methods in Wells:
 	-MoveWells
 	-CheckValue
 If you want further informations about the methods check the file himself 
+
+----------------------------------------------------
+
+log_file : Historic of instruction send to the 3d-mill. If the printer seems to be not working when u send a list of instruction, chek the file to be sure there is not a problem with your script. For example if u open two times the communication with the device.
 
 ----------------------------------------------------
 
