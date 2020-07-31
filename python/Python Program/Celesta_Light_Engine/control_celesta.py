@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 31 10:58:34 2020
+
+@author: MFM
+"""
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -6,7 +13,7 @@ Created on Fri Jul 24 15:21:43 2020
 @author: marion
 using the work of Bogdan Bintu
 """
-
+import sys
 import urllib.request
 import traceback
 
@@ -36,13 +43,13 @@ class LumencorLaser(object):
         try:
             # See if the system returns back the right IP.
             self.message = self.getIP()
-            assert (self.message['message'] == 'A IP '+self.ip)
-            assert (int(self.laser_id)<self.getNumberLasers())
+            # assert (self.message['message'] == 'A IP '+self.ip)
+            # assert (int(self.laser_id)<self.getNumberLasers())
             self.live = True
         except:
-            print(traceback.format_exc())
+            # print(traceback.format_exc())
             self.live = False
-            print("Failed to connect to Lumencor Laser at ip:", self.ip)
+            # print("Failed to connect to Lumencor Laser at ip:", self.ip)
 
         if self.live:
             [self.pmin, self.pmax] = self.getPowerRange()
@@ -153,8 +160,6 @@ class LumencorLaser(object):
         """
         return self.live
    
-
-
 # if (__name__ == "__main__"):
 #     import time
 #     obj = LumencorLaser(laser_id=0,ip = '192.168.201.200')
@@ -166,15 +171,43 @@ class LumencorLaser(object):
 #         time.sleep(0.1)
 #         obj.shutDown()
 
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+def acq_1_color (color1,laser_power) :
+    import time
+    color1.setPower(laser_power)
+    color1.setLaserOnOff(True)
+    time.sleep(0.100)
+    color1.setLaserOnOff(False)
+    time.sleep(0.100)
+
+def acq_2_colors (color1,color2,laser_power1, laser_power2):
+    import time
+    color1.setPower(laser_power1)
+    color2.setPower(laser_power2)
+    color1.setLaserOnOff(True)
+    time.sleep(0.100)
+    color1.setLaserOnOff(False)
+    color2.setLaserOnOff(True)
+    time.sleep(0.100)
+    color2.setLaserOnOff(False)
+
+#WORK IN PROGRESS
+#def laser_choice_1 ():
+#    print ('Laser color 1 ? VIOLET = 0, BLUE = 1, CYAN = 2, TEAL = 3, GREEN = 4, RED = 5 or NIR = 6 ')
+#    laser_ch1 = int(input())
+#    laser_color1 = LumencorLaser(laser_id=laser_ch1,ip = '192.168.201.200')
+#    print ('Power laser 1 ? (mW) ')
+#    power1 = int(input())
+#    laser_color1.setPower(power1)
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
 #SET calibration or acquisition mode
-Calib = True
-Acq = False
-
-
+Calib = False
+Acq = True
 
 print ('Calibration [C] or Acquisition [A] mode ?')
 mode = input()
@@ -186,6 +219,10 @@ if mode == 'Acquisition'or mode == 'A' or mode == 'a' :
     Acq = True
     Calib = False
 
+# laser_color1 = LumencorLaser(laser_id=5,ip = '192.168.201.200')
+# laser_color2 = LumencorLaser(laser_id=1,ip = '192.168.201.200')
+# laser_color1.setPower(20)
+# laser_color2.setPower(20)
 
 
 #100ms ON - 100ms OFF
@@ -193,30 +230,34 @@ if Acq == True :
     print ('Laser color 1 ? VIOLET = 0, BLUE = 1, CYAN = 2, TEAL = 3, GREEN = 4, RED = 5 or NIR = 6 ')
     laser_ch1 = int(input())
     laser_color1 = LumencorLaser(laser_id=laser_ch1,ip = '192.168.201.200')
-    print ('Power laser 1 ? (mW) ')
+    print ('Laser Power 1 ? (mW) ')
     power1 = int(input())
     laser_color1.setPower(power1)
-
+    
     print ('Laser color 2 ? VIOLET = 0, BLUE = 1, CYAN = 2, TEAL = 3, GREEN = 4, RED = 5 or NIR = 6 ')
     laser_ch2 = int(input())
     laser_color2 = LumencorLaser(laser_id=laser_ch2,ip = '192.168.201.200')
-    print ('Power laser 2 ? (mW) ')
+    print ('Laser Power 2 ? (mW) ')
     power2 = int(input())
     laser_color2.setPower(power2)
-    
-    while Acq :
+    print('Exposure time ? (s)')
+    exp = float(input())
+    print('Acquisition running ...')
+    while Acq : 
+        try :
+            import time
+            laser_color1.setLaserOnOff(True)
+            time.sleep(exp)
+            laser_color1.setLaserOnOff(False)
+            laser_color2.setLaserOnOff(True)
+            time.sleep(exp)
+            laser_color2.setLaserOnOff(False)
         
-        import time
-        laser_color1.setLaserOnOff(True)
-        time.sleep(0.100)
-        laser_color1.setLaserOnOff(False)
-        laser_color2.setLaserOnOff(True)
-        time.sleep(0.100)
-        laser_color2.setLaserOnOff(False)
-        if KeyboardInterrupt :
-            laser_color1.shutDown()
-            laser_color2.shutDown()
-            break
+        except KeyboardInterrupt :
+            laser_color1.setLaserOnOff(False)
+            laser_color2.setLaserOnOff(False)
+            print("End of acquisition - All lasers off")
+            sys.exit()
 
 #Continuous laser
 if Calib == True :
@@ -226,12 +267,14 @@ if Calib == True :
     print ('Power laser ? (mW) ')
     power = int(input())
     laser_color.setPower(power)
-
+    print('Calibration running ...')
     while Calib :
-        laser_color.setLaserOnOff(True)
-        if KeyboardInterrupt :
-            laser_color.shutDown()
-            break
+        try :
+            laser_color.setLaserOnOff(True)
+        except KeyboardInterrupt :
+            laser_color.setLaserOnOff(False)
+            print("End of calibration - laser off")
+            sys.exit()
 
 #
 # The MIT License
