@@ -26,4 +26,3 @@ Use low amplitude movements if you want to be sure you don't damage the device.
 Be sure the needle is above the wells before moving in X,Y.
 If you want to move only on Z you can write "cnc.Move(91,0,0,2)"for example.
 
-Values must be between : 0<X<295mm; 0<Y<145mm; 0<Z<45mm 

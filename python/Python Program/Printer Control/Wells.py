@@ -11,8 +11,8 @@ Created on Wed Jul 15 10:15:55 2020
 
 from Driver import CNC                                                         # Import the class CNC from Driver.py
 import time               
-import sys
-sys.path.append("Parameters of each device")                                   # Add the file Parameters of each device to the path
+import site
+site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program')
 import Config                                                                  # Import the parameters from Config.py
 
 
@@ -114,17 +114,17 @@ class Wells:
           self.TargetWells=TargetWells                                                                          # Save the value of the TargetWells in self.TargetWells
           Wells.CheckValue(self)                                                                                # Check if the Well is within limits
           Wells.CoordWells(self)                                                                                # Caluclate the relative coordinates of the wells from Wells 1
-          if self.Coord["Outrange"]=="Values within limits" and self.Coord["ReadyToGo"]=="YES" :                     # Check if the value is fine and if we are ready to manipulate
+          if self.Coord["Outrange"]=="Values within limits" and self.Coord["ReadyToGo"]=="YES" :                    # Check if the value is fine and if we are ready to manipulate
               if self.FirstMove==0:                                                                                 # If this is the first movement 
                   self.FirstMove=1                                                                                  # Change the value of FirstMove
                   self.cnc.Move(91,self.Coord['Xwell 0'] ,self.Coord['Ywell 0'],0)                                  # Move the 3d-mill to the wells in relative movement
-                  self.cnc.Move(91,0,0,-2)
+                  self.cnc.Move(91,0,0,-2)                                                                          # Move the needle down in z coordinates (you may have to change the Z value)
               else:                                                                                                 # If this is not the first movement, the relative movement will depend of the current position of the device
-                  self.cnc.Move(91,0,0,2)
+                  self.cnc.Move(91,0,0,2)                                                                           # Move the needle up in z coordinates (be sure the z value correspond to the one written in the line 121)(d'ont forget to change the value in line 172)
                   X=self.Coord['Xwell '+str(self.NbWells-1)]-self.Coord['Xwell '+str(self.NbWells-2)]               # Calculate the relative movement in X depending of the target position and the current poisiotn of the device
                   Y=self.Coord['Ywell '+str(self.NbWells-1)]-self.Coord['Ywell '+str(self.NbWells-2)]               # Calculate the relative movement in Y depending of the target position and the current poisiotn of the device
                   self.cnc.Move(91,X,Y,0)                                                                           # Move the 3d-mill to the wells in relative movement
-                  self.cnc.Move(91,0,0,-2)
+                  self.cnc.Move(91,0,0,-2)                                                                          # Move the needle down in z coordinates (be sure the z value correspond to the one written in the line 121)
       except KeyError:
           pass
                 
@@ -169,7 +169,7 @@ class Wells:
       """
       try:
           if self.NbWells>>0 and self.Coord["ReadyToGo"]=="YES" :   
-              self.cnc.Move(91,0,0,2)
+              self.cnc.Move(91,0,0,2)                                                                                    # Move the needle up in z coordinates (be sure the z value correspond to the one written in the line 121)
               self.cnc.Move(91,-self.Coord['Xwell '+str(self.NbWells-1)],-self.Coord['Ywell '+str(self.NbWells-1)],0)    # Move the printer back to the Wells_1
           self.cnc.CloseConnection()                                                                                     # Close the connection with the 3d-mill
       except ValueError:

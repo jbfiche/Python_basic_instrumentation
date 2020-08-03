@@ -13,9 +13,6 @@ NbWellsWidth=5      # Number of Wells in Width (Axis Y of the printer)
 NbWellsLength=16    # Number of Wells in Length (Axis X of the printer)
 DifferenceW=13      # Differemce between the center of 2 Wells in Width (Unit : mm)(AxisY)
 DifferenceL=13      # Difference between the center of 2 Wells in Length (Unit : mm)(AxisX)
-#XWell_1=53          # Coordinates of the starting Well (X)
-#YWell_1=10          # Coordinates of the starting Well (Y)
-#ZWell_1=30          # Coordinates of the starting Well (Z) !!!!!!Be sure Zwell_1 is higher than your wells!!!!!!!
 
 '''
 Config for the printer 3d-mill

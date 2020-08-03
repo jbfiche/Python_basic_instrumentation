@@ -28,8 +28,8 @@ MotorLimit["Relative"]=91
 
 import time
 import serial
-import sys
-sys.path.append("Parameters of each device")                                   # Add the file Parameters of each device to the path 
+import site
+site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program')
 import Config
 
 class CNC:

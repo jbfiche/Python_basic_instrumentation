@@ -10,9 +10,10 @@ For example, the path to "Valve.py" is ..../Python Program/Valve Control
         and the path to "Config.py" is ..../Python Program/Parameters of each device
 So, they are not in the same folder. If I want to import "Config.py" in Valve what I have to do is :
 	
-	- import sys                                     # We will be able to change the path (default library)
-	- sys.path.append("Parameters of each device")   # Instead of looking for Config.py only in the folder "Valve Control", your script will look for this file in "Parameters of each device" too
-	- import Config				  # Import Config
+	- import site
+	- site.addsitedir("/home/aymerick/Desktop/Stage_Aymerick/python/Python Program")   
+	# Instead of looking for Config.py only in the folder "Valve Control", your script will look for this file in "Python Program" too
+	- import Config				  
 	
 If it still not working, try to put everything in the same folder
 
@@ -27,8 +28,8 @@ In this case, your script can't find a library (like serial for example). There 
 		- Open a terminal
 		- Write "$ Python"
 		- Write "import <name of your module>" (For example if you installed pyserial and you want to find where he is in your disk)
-		- Write "<name of your module>" The answer will the path to this module
-		- Check if your module is in the same deposits than the others
+		- Write "<name of your module>" The answer will be the path to this module
+		- Check if your module is in the same deposits than the others. If he is not try to understand why and see if you can move it
 		- Restart Spyder
 		
 
