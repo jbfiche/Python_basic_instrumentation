@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jul 31 10:58:34 2020
-
-@author: MFM
-"""
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -236,7 +229,6 @@ if Acq == True :
     
     print ('Laser color 2 ? VIOLET = 0, BLUE = 1, CYAN = 2, TEAL = 3, GREEN = 4, RED = 5 or NIR = 6 ')
     laser_ch2 = int(input())
-    laser_color2 = LumencorLaser(laser_id=laser_ch2,ip = '192.168.201.200')
     print ('Laser Power 2 ? (mW) ')
     power2 = int(input())
     laser_color2.setPower(power2)
