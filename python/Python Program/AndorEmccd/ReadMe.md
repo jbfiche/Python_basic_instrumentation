@@ -1,9 +1,3 @@
-System Tested : Windows
-
-Works with : Python 3.6;3.7
-
-Don't works with : Python 3.8
-
 The script andorEmccd.py in the folder andorEmccd contains the class wich allows you to control the device.
 
 This class is used in the script example.py. In this file, you will found some examples to understand

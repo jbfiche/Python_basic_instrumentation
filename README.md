@@ -10,14 +10,18 @@ Config : Parameters of each device (Printer,Wells,Valve). Read it before using a
 
 ----------------------------------------------------
 
-Driver : Drivers for the 3D-mill.Contains all the methods to interact with the device. They are basic functions used in the script "Wells.py".
+Driver : System tested:Windows+Linux   Works with:Python 3.8;3.7
+
+Drivers for the 3D-mill.Contains all the methods to interact with the device. They are basic functions used in the script "Wells.py".
 Methods in Driver :
 	- Open/Close Connection (Open or close the communication with the device)
 	- Status (Get the current state of the device)
 	- WaitForIdle (Wait until the device has finished his action)
 	- Move (Move the device to target coordinates)
 
-Wells : Program to move the 3D-mill to specific wells. This script use the class CNC created in Driver to move the 3d-mill.
+Wells : System tested:Windows+Linux   Works with:Python 3.8;3.7
+
+Program to move the 3D-mill to specific wells. This script use the class CNC created in Driver to move the 3d-mill.
 Methods in Wells:
 	- Wells_1 (Ask the user if the 3D-mill is above the Wells 1)
 	- CoordWells (Calculate the coordinates of the wells)
@@ -31,7 +35,9 @@ For example if u open two times the communication with the device.
 
 ----------------------------------------------------
 
-Valve : Contains all the methods to interact with one or more valve.
+Valve : System tested:Windows+Linux   Works with:Python 3.8
+
+Contains all the methods to interact with one or more valve.
 Methods in Valve:
 	- Open Connection (Open the communication with the device)
 	- Status (Get the current state of the device)
@@ -40,7 +46,9 @@ Methods in Valve:
 
 ----------------------------------------------------
 
-MS2000 : Drivers for the translation plate (MS2000). Contains all the methods to interact with the device and to save the Range Of Interest :
+MS2000 : System Tested:Windows    Works with:Python 3.8
+
+Drivers for the translation plate (MS2000). Contains all the methods to interact with the device and to save the Range Of Interest :
 Methods in MS2000:
 	- Open/Close Connection (Open or close the communication with the device)
 	- Status (Get the current state of the device)
@@ -54,6 +62,12 @@ Methods in MS2000:
 	- Brightness (Set the luminosity of the device)
 	
 ---------------------------------------------------- 
+
+AndorEmccd : System Tested:Windows   Works with:Python 3.6;3.7   Doesn't works with:Python 3.8
+
+Contains the methods to interact with the Andor camera,acquire data and more. Check the script example.py how to use this methods
+
+----------------------------------------------------
 	
 Problem : File where you can find some solutions to some problems I have encountered during the developement of this scripts
 
