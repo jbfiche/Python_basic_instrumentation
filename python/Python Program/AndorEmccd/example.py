@@ -1,73 +1,65 @@
-"""An example of how to take a single image using the AndorEmccd class"""
+"""
+This file contains examples to understand how to use some functions
+"""
 import time
 from andorEmccd import AndorEmccd
 import cv2
-import numpy as np
-SpoolPath='C:\\Users\\admin\\Desktop\\Stage_Aymerick\\python\\Python Program\\AndorEmccd\\'
-FileName='Test2'
-FrameBufferSize=10
-# Mesure en continue
 
-# cam = AndorEmccd()
-# cam.get_status()
+SpoolPath='C:\\Users\\admin\\Desktop\\Stage_Aymerick\\python\\Python Program\\AndorEmccd\\'                        # Path to the folder wher you want to save your data (in case of spooling)
+FileName='Acquisition_1'                                                                                           # Name of your file
+FrameBufferSize=10                                                                                                 # Size of the frame buffer
+
+# Continuous acquisition
+
+# cam = AndorEmccd()                                                                      # Initialize the device
+# cam.get_status()                                                                        # Print the current status of the camera (Idle if there is no acquisition and Running if there is one)
 # try:
-#     cam.set_shutter_open(True)
-#     cam.set_temperature(20)
-#     cam.set_exposure_time(0.1)
-#     cam.start_acquisition(single=False)
+#     cam.set_shutter_open(True)                                                          # Open the shutter of the camera
+#     cam.set_temperature(20)                                                             # Set the temperature
+#     cam.set_exposure_time(0.1)                                                          # Set the time of exposure 
+#     cam.start_acquisition(single=False)                                                 # Start the acquisition (if Single=True → One acquisition; if Single=False → Continuous acquisition)
 #     X=0
-#     while X!=1:  
-#         im = cam.wait_for_image()
-#         array=im.astype("uint8")
-#         frame = cv2.resize(array,(0,0),fx=1.0, fy=1.0)
-#         cv2.imshow("Image",frame)
-#         cv2.waitKey(1)
-#         cam.get_status()
-#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#     while X!=1:                                                                         # We want to see the current image until the user decide to stop
+#         im = cam.wait_for_image()                                                       # Take the last image (numpy array)
+#         array=im.astype("uint8")                                                        # Change the data type in the numpy array 
+#         frame = cv2.resize(array,(0,0),fx=1.0, fy=1.0)                                  # Resize our images (if you want something 2 times bigger you can write fx=2.0 and fy=2.0)
+#         cv2.imshow("Image",frame)                                                       # Show the image
+#         cv2.waitKey(1)                                                                  # The function waitKey waits for a key event infinitely (when delay < 0 ) or for delay milliseconds,
+#         cam.get_status()                                                                # when it is positive. You MUST put this function or your windows will crashes 
+#         if cv2.waitKey(1) & 0xFF == ord('q'):                                           # If the user press q (you may have to spam it), stop the loop
 #             break
-#     cv2.destroyAllWindows()
-#     cam.stop_acquisition()   
+#     cv2.destroyAllWindows()                                                             # We close all of the windows 
+#     cam.stop_acquisition()                                                              # We stop the current acquisition
 # except:
-#     print("Problème")
+#     print("Something wrong happened")
 #     pass
-# cam.set_shutter_open(False)
+# cam.set_shutter_open(False)                                                             # Close the shutter of the camera
 # cam.get_status()
-# cam.close()
 
 #################
 
-#Contrôle que la température varie bien (et quelques autres fonctions)
+# Check if the temperature is changing
 
-# cam = AndorEmccd()
-# cam._get_preamp_gains()
-# cam._get_vertical_shift_speeds()
-# cam._get_horizontal_shift_speeds()
-# cam.get_horizontal_shift_parameters()
-# cam.get_temperature()
-# cam.get_acquisition_timings()
-# cam.get_all_images()
-# cam._get_all_images()
-# cam.get_status()
-# cam.set_temperature(5)
-# for i in range (0,20):
+# cam = AndorEmccd()                                                                      # Initialize the device 
+# cam.set_temperature(5)                                                                  # Set the temperature
+# for i in range (0,20):                                                                  # Check the temperature every 10 seconds
 #     cam.get_temperature()
 #     time.sleep(10)
-# cam.close()
 
 ##################
 
-#Spool
+# Spool the data in a specific folder
 
-cam = AndorEmccd()
-cam.set_shutter_open(True)
-cam.set_temperature(20)
-cam.set_exposure_time(0.1)
-cam.set_spool(True,SpoolPath,FileName,FrameBufferSize)
-cam.start_acquisition(single=False)
-time.sleep(20)
-cam.stop_acquisition() 
-cam.set_spool(False,SpoolPath,FileName,FrameBufferSize)
-cam.set_shutter_open(False)
+#cam = AndorEmccd()                                                                      # Initialize the device
+#cam.set_shutter_open(True)                                                              # Open the shutter of the camera
+#cam.set_temperature(20)                                                                 # Set the temperature
+#cam.set_exposure_time(0.1)                                                              # Set the time of exposure
+#cam.set_spool(True,SpoolPath,FileName,FrameBufferSize)                                  # Start the spool if True    
+#cam.start_acquisition(single=False)                                                     # Start the acquisition (ALWAYS start the acquisition after the sppoling)
+#time.sleep(20)                                                                          # Wait some time to acquire data
+#cam.stop_acquisition()                                                                  # Stop the acquisition
+#cam.set_spool(False,SpoolPath,FileName,FrameBufferSize)                                 # Stop the spool if False
+#cam.set_shutter_open(False)                                                             # Close the shutter
 
 ##################
 

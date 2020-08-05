@@ -1,3 +1,7 @@
+'''
+Import all the modules (be sure your environnement has all of this module)
+'''
+
 import ctypes
 import time
 import platform
@@ -6,27 +10,24 @@ import numpy as np
 import collections
 import threading
 import contextlib
-import site
-site.addsitedir('C:\\Users\\admin\\Desktop\\Stage_Aymerick\\python\\Python Program')
-import Config
-
 from ctypes import c_int, c_float, c_long, c_ulong, POINTER,c_char_p
 
 
-# Constants for SetTrigger()
+'''Constants for SetTrigger()'''
+
 TRIGGER_INTERNAL = 0
 TRIGGER_EXTERNAL = 1
 
-# Constants for SetReadMode()
+'''Constants for SetReadMode()'''
 READMODE_SINGLETRACK = 3
 READMODE_IMAGE = 4
 
-# Constants for SetAcquitisionMode()
+'''Constants for SetAcquitisionMode()'''
 ACQUISITION_SINGLE = 2
 ACQUISITION_RUN_TILL_ABORT = 5
 
 
-class LibInstance:
+class LibInstance:                                                                                # LibInstance will instantiate the library
     # Andor SDK return codes
     return_codes = {
         20002: "DRV_SUCCESS",
@@ -46,17 +47,14 @@ class LibInstance:
     }
 
     def __init__(self):
-        self.lock = threading.Lock()
-
-        if platform.system() == "Windows":
+        self.lock = threading.Lock() 
+        if platform.system() == "Windows":                                                       # Depending of our system, the path to the library will be different
             os.environ['PATH'] = "C:\Program Files\Andor SOLIS\Drivers" + ';' \
                                     + os.environ['PATH']
             if platform.architecture()[0] == "32bit":
                 dll = ctypes.WinDLL("atmcd32d.dll")
-                # print("32")
             else:
                 dll = ctypes.WinDLL("atmcd64d.dll")
-                # print("64")
             path = None
         elif platform.system() == "Linux":
             dll = ctypes.cdll.LoadLibrary("/usr/local/lib/libandor.so")
@@ -65,7 +63,8 @@ class LibInstance:
             raise Exception("Unsupported operating system")
         self.dll = dll
 
-        def err_check(retval, ok_codes=[]):
+
+        def err_check(retval, ok_codes=[]):                                                      # Check if there is an error and print a message depending of the code of the error
             msg = self.return_codes.get(retval, "UNKNOWN")
             if msg not in ok_codes+["DRV_SUCCESS"]:
                 raise Exception("Call failed with error '{}' ({})"
@@ -106,6 +105,8 @@ class LibInstance:
                 return 0
             return (1+last.value - first.value) % (2**64)
         self.get_number_new_images = get_number_new_images
+
+        """Call functions from the library and stock them in variables"""
 
         self.abort_acquisition = wrapper(dll.AbortAcquisition) #ok_codes=["DRV_IDLE"]
         self.set_cooler_mode = wrapper(dll.SetCoolerMode, [c_int])
@@ -252,7 +253,6 @@ class AndorEmccd:
                                  hBin=1, vBin=1)
 
         # Sensible defaults
-        # self.set_shutter_open(True)
         self.set_trigger_mode(TRIGGER_INTERNAL)
         with self.lock_camera():
             self.lib.set_kinetic_cycle_time(0)
@@ -375,10 +375,6 @@ class AndorEmccd:
         The tuple (horizontal_shift_speed, em_gain, adc_bit_depth) must be in
         self.horizontal_shift_parameters (i.e. it must be a valid combination
         of parameters"""
-        # print(em_gain)
-        # print(self.horizontal_shift_parameters)
-        # em_gain=True
-        # adc_bit_depth=14
         try:
             param_ind = self.horizontal_shift_parameters.index( 
                             (horizontal_shift_speed, em_gain, adc_bit_depth) )
@@ -582,10 +578,11 @@ class AndorEmccd:
         return ims
     
     def set_spool(self,Spool,SpoolPath,FileName,Buffer):
-        # with self.lock_camera():
+        """Start or stop the pool of the data"""
         self.lib.set_spool(1 if Spool else 0,7,(SpoolPath+FileName).encode('utf8'),Buffer)
 
     def get_status(self):
+        """Give the current status of the device"""
         status=c_long()
         self.lib.get_status(ctypes.byref(status))
         Status=str(status)
@@ -593,3 +590,5 @@ class AndorEmccd:
             print("Idle (20073)")
         elif Status=="c_long(20072)":
             print("Running (20072)")
+        else:
+            print("Error No:"+Status)

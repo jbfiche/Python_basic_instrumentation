@@ -1,0 +1,29 @@
+If you encounter a problem with the AndorCamera, this file might help you:
+
+---------------------------------
+
+Prob : Unicode Error (Specific to windows ?)
+
+When you give a path for your spool for example, you will have to write it like this :
+
+	C:\\Users\\......\\....\\
+	
+If you write the path as usual: C:\Users\....\.....\ python will expect numbers after \U
+
+---------------------------------
+
+Prob : 1 argument expected (4 given)
+
+In this case, the problem is the number of arguments your function can handle is wrong.
+
+For example, the function SetShutters needs 4 arguments:
+
+	SetShutters(int ttlType,int mode,int closingTime,int openingTime) (All of the arguments are int)
+	
+But if you write "self.set_shutter = wrapper(dll.SetShutter, [c_int])", your variable will expect only one argument.
+
+So, this is wrong. The correct command is :
+
+	self.set_shutter = wrapper(dll.SetShutter, [c_int,c_int,c_int,c_int])
+	
+---------------------------------
