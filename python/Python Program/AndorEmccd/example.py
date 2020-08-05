@@ -2,7 +2,7 @@
 This file contains examples to understand how to use some functions
 """
 import time
-from andorEmccd import AndorEmccd
+from andorEmccd import AndorEmccd                                                                                  # Import the class AndorEmccd
 import cv2
 
 SpoolPath='C:\\Users\\admin\\Desktop\\Stage_Aymerick\\python\\Python Program\\AndorEmccd\\'                        # Path to the folder wher you want to save your data (in case of spooling)
@@ -42,7 +42,7 @@ FrameBufferSize=10                                                              
 
 # cam = AndorEmccd()                                                                      # Initialize the device 
 # cam.set_temperature(5)                                                                  # Set the temperature
-# for i in range (0,20):                                                                  # Check the temperature every 10 seconds
+# for i in range (0,20):                                                                  # Check the temperature every 10 seconds 20 times
 #     cam.get_temperature()
 #     time.sleep(10)
 
@@ -59,7 +59,7 @@ FrameBufferSize=10                                                              
 #time.sleep(20)                                                                          # Wait some time to acquire data
 #cam.stop_acquisition()                                                                  # Stop the acquisition
 #cam.set_spool(False,SpoolPath,FileName,FrameBufferSize)                                 # Stop the spool if False
-#cam.set_shutter_open(False)                                                             # Close the shutter
+#cam.set_shutter_open(False)
 
 ##################
 
