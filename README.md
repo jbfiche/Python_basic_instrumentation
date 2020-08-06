@@ -154,7 +154,7 @@ Installation went well though in the end it was impossible to detect any camera 
 
 ## PyuEye and drivers
 
-Since our DCC-1545 camera was not detected using the Thorlab sdk, another methods was described in the (python/Python Program/Thorlabs camera DCC1545/Doc/DCU223C-Manual.pdf), p.61. Following the link indicated for Linux, it is possible to download the Linux drivers for the camera (see [here](python/Python Program/Thorlabs camera DCC1545/Doc/uEye_Linux_382_64Bit/uEye_Linux_382_64Bit/) for the drivers).
+Since our DCC-1545 camera was not detected using the Thorlab sdk, another methods was described in the (python/Python Program/Thorlabs camera DCC1545/Doc/DCU223C-Manual.pdf), p.61. Following the link indicated for Linux, it is possible to download the Linux drivers for the camera (see python/Python Program/Thorlabs camera DCC1545/Doc/uEye_Linux_382_64Bit/uEye_Linux_382_64Bit/ for the drivers).
 
 Following the readme file, install the **uEye SDK for Linux**. In order to check if the installation worked :
 
@@ -163,7 +163,7 @@ Following the readme file, install the **uEye SDK for Linux**. In order to check
 - In order to test whether there is a camera connected to the PC, type `ueyesetid -d`. If there is a camera, the device should appear with the right serial #. Interestingly, the model of camera is not DCC1545 but UI-1540ME-M and can be found directly on the **IDS (imaging development systems Gmbh) website**. 
 - In order to close the program  type : `/etc/init.d/ueyeusbdrc stop`.
 
- A specific API to interface uEye with Python can be downloaded [here](https://pypi.org/project/pyueye/). In order to found the manual and examples, you need to download the files available on the webpage. A very simple example can also be downloaded from the IDS website and can be found [here](python/Python Program/Thorlabs camera DCC1545/Doc/pyueye/uEye_SimpleLive_PyuEye_OpenCV). It was tested and allow for a proper detection of the DCC1545 camera.
+ A specific API to interface uEye with Python can be downloaded [here](https://pypi.org/project/pyueye/). In order to found the manual and examples, you need to download the files available on the webpage. A very simple example can also be downloaded from the IDS website and can be found in the folder python/Python Program/Thorlabs camera DCC1545/Doc/pyueye/uEye_SimpleLive_PyuEye_OpenCV. It was tested and allow for a proper detection of the DCC1545 camera.
 
 Finally, the manual with all the functions can be found [here](https://en.ids-imaging.com/download-details/AB.0010.1.25600.23.html?os=linux&version=&bus=64&floatcalc=) but you need to have an account to access this webpage. 
 
