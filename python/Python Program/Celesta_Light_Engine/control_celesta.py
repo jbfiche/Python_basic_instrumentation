@@ -182,9 +182,11 @@ def acq_2_colors (color1,color2,laser_power1, laser_power2):
     color1.setLaserOnOff(True)
     time.sleep(0.100)
     color1.setLaserOnOff(False)
+    time.sleep(0.100)
     color2.setLaserOnOff(True)
     time.sleep(0.100)
     color2.setLaserOnOff(False)
+    time.sleep(0.100)
 
 #WORK IN PROGRESS
 #def laser_choice_1 ():
