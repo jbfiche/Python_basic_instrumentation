@@ -241,9 +241,11 @@ if Acq == True :
             laser_color1.setLaserOnOff(True)
             time.sleep(exp)
             laser_color1.setLaserOnOff(False)
+            time.sleep(exp)
             laser_color2.setLaserOnOff(True)
             time.sleep(exp)
             laser_color2.setLaserOnOff(False)
+            time.sleep(exp)
         
         except KeyboardInterrupt :
             laser_color1.setLaserOnOff(False)
