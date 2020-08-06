@@ -1,0 +1,7 @@
+Path: /home/jb/Workspace/Python/Tuto_Python/First_Project
+
+DAQ:
+  serial_number : 01CF3519
+  interfacing_method : InterfaceType.USB
+  ao_pump : 2
+  do_trigger : 0

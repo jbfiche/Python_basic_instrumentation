@@ -1,0 +1,52 @@
+from Test_Project.Model.DAQ.daq import Daq
+from time import sleep
+import yaml
+
+class DAQ_Experiment():
+
+	# Define the __init__ method
+	# --------------------------
+
+	def __init__(self, DAQ_id):
+		# print('init of class DAQ_Experiment')
+		self.DAQ_id = DAQ_id
+		self.driver = Daq(DAQ_id)
+		self.driver.initialize()
+		self.driver.idn()
+        
+    # Define a method to load and read the config file
+    # ------------------------------------------------
+
+	def load_config(self, filename):
+		with open(filename, 'r') as f:
+			data = yaml.load(f, Loader=yaml.FullLoader)
+		return data
+        
+	# Define a method for a defined injection
+	# ---------------------------------------
+
+	def pump_injection(self,flow_rate,volume,ao_channel):
+		dt = 60*volume/flow_rate
+		V_ao = flow_rate/50
+
+		# COMMENT ARRËTER LA METHODE SI IL Y A UNE ERREUR? (par exemple pas le bon channel)
+
+		self.driver.set_ao_voltage(ao_channel,V_ao)
+		sleep(dt)
+		self.driver.set_ao_voltage(ao_channel,0)
+
+	# Define a method to send a trigger
+	# ---------------------------------
+
+	def send_trigger(self,dt,do_channel):
+		self.driver.set_do_value(do_channel,0)
+		sleep(0.005)
+		self.driver.set_do_value(do_channel,1)
+		sleep(dt)
+		self.driver.set_do_value(do_channel,0)
+
+	# Define the method to close the DAQ connection
+	# ---------------------------------------------
+
+	def stop(self):
+		self.driver.disconnect()
