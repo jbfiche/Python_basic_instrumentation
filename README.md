@@ -10,8 +10,8 @@
 
 **Config.py** : Parameters of each device (Printer,Wells,Valve, etc.). Read it before using any program to be sure that the parameters correspond to your devices. You can change their values but don't change the name of the variables. You can add new variables if you need to. To call a variable in an other script you have to:
 
-	- import Config (if your script is in the same deposit as the file Config.py)
-	- write your variable like this : Config.$NameOfYourVariable"
+ - import Config (if your script is in the same deposit as the file Config.py)
+ - write your variable like this : Config.$NameOfYourVariable"
 
 ----------------------------------------------------
 
@@ -45,7 +45,7 @@ A class **Wells** is created with the following methods :
 **log_file **: Historic of the instructions sent to the 3D-mill. If the printer seems to not work when u send a list of instructions, check the file to be sure there is not a problem with your script.
 For example if you open twice the communication with the device. 
 
-More information can be found [in this folder](python/Python Program/3D Printer Control)
+More information can be found at python/Python Program/3D Printer Control
 
 ----------------------------------------------------
 
@@ -63,7 +63,7 @@ Methods in Valve:
  - WaitForIdle (Wait until the device has finished his action)
  - ValveRotation (Rotate the valve to target position)
 
-More information [here](python/Python Program/Hamilton valve/How_to_use.md)
+More information python/Python Program/Hamilton valve/How_to_use.md
 
 ----------------------------------------------------
 
@@ -88,7 +88,7 @@ Methods in **MS2000**:
  - Speed (Set the speed of the device)
  - Brightness (Set the luminosity of the device - in case there is a LED system attached to the stage, like on the merFISH setup)
 
-More detailed information can be found [here](python/Python Program/ASI MS2000 translation stage/How_to_use.md).
+More detailed information can be found python/Python Program/ASI MS2000 translation stage/How_to_use.md
 
 ----------------------------------------------------
 
@@ -106,7 +106,7 @@ Contains the methods to interact with the Andor camera, acquire data and more. A
 - A **get_status** method was added
 - A**set_spool** method was added.
 
-Check the script **example.py** to understand how to use this class. More information can be found [here](python/Python Program/Andor emCCD/How_to_use.md).
+Check the script **example.py** to understand how to use this class. More information can be found python/Python Program/Andor emCCD/How_to_use.md
 
 ----------------------------------------------------
 
@@ -129,7 +129,7 @@ The code called "control_celesta.py" will be used to modulate the lasers in sync
 
 **Communication method** : In order to communicate with the Measurement Computing acquisition card, a universal library for Linux is available on gitHub [here](https://github.com/mccdaq/uldaq/blob/master/README.md). As usual, this library is actually written in C/C++ and an API (Application Programming Interface) is used to interact directly with this library in Python. 
 
-Note that all files and documentation can be found [here](python/Python Program/Measurement_computing_DAQ/Libraries). The installation procedure works in two steps :
+Note that all files and documentation can be found python/Python Program/Measurement_computing_DAQ/Libraries. The installation procedure works in two steps :
 
 1. Installation of the uldaq library and C/C++ compilers : Follow the instructions described [here](https://github.com/mccdaq/uldaq/blob/master/README.md). Make sure you are running the latest version, else it might not be compatible with your version of Python.
 2. Installation of the uldaq API for Python and test of the DAQ : The information regarding the installation are [here](https://pypi.org/project/uldaq/). Installation must be performed in the local environment. The first example analyzed was the function d_in.py that is reading the first available digital port. The function is analyzed in the following python files daq.py and daq_experiment.py. 
@@ -138,11 +138,11 @@ Note that all files and documentation can be found [here](python/Python Program/
 
 ## THORLABS CMOS camera (DCC1545) :
 
-All files were installed [here](python/Python Program/Thorlabs camera DCC1545/Doc). A manual of all the cameras can be also be found in the same folder.
+All files were installed python/Python Program/Thorlabs camera DCC1545/Doc. A manual of all the cameras can be also be found in the same folder.
 
 ## Thorlabs sdk - NOT WORKING
 
-The CMOS camera from Thorlabs was tested on the computer. This model is monochrome with a 1280x1024 pixels sensor. The SDK/ C/C++ libraries for Linux can be found [here](https://www.thorlabs.com/software_pages/ViewSoftwarePage.cfm?Code=ThorCam) and were installed in this [folder](python/Python Program/Thorlabs camera DCC1545/Doc). Information regarding Linux installation can be found [here](python/Python Program/Thorlabs camera DCC1545/Doc/Scientific_Camera_Interfaces_Linux-1.3/SDK/docs/Thorlabs_unified_sdk_setup_instructions_linux.txt).
+The CMOS camera from Thorlabs was tested on the computer. This model is monochrome with a 1280x1024 pixels sensor. The SDK/ C/C++ libraries for Linux can be found [here](https://www.thorlabs.com/software_pages/ViewSoftwarePage.cfm?Code=ThorCam).
 
 In order to install a Python wrapper, the following sdk needs to be installed as well. Follow theses instruction:
 
@@ -150,11 +150,11 @@ In order to install a Python wrapper, the following sdk needs to be installed as
 - cd to the folder containing the Python wrapper (for this computer it is located [here](python/Python Program/Thorlabs camera DCC1545/Doc/Scientific_Camera_Interfaces_Linux-1.3/Python_SDK)
 - run `python -m pip install thorlabs_tsi_camera_python_sdk_package.zip`
 
-Installation went well though in the end it was impossible to detect any camera on the computer... apparently this model of camera is not [supported](python/Python Program/Thorlabs camera DCC1545/Doc/Scientific_Camera_Interfaces_Linux-1.3/Python_SDK/docs/Python README.txt). 
+Installation went well though in the end it was impossible to detect any camera on the computer... apparently this model of camera is not supported.
 
 ## PyuEye and drivers
 
-Since our DCC-1545 camera was not detected using the Thorlab sdk, another methods was described in the [manual](python/Python Program/Thorlabs camera DCC1545/Doc/DCU223C-Manual.pdf), p.61. Following the link indicated for Linux, it is possible to download the Linux drivers for the camera (see [here](python/Python Program/Thorlabs camera DCC1545/Doc/uEye_Linux_382_64Bit/uEye_Linux_382_64Bit/) for the drivers).
+Since our DCC-1545 camera was not detected using the Thorlab sdk, another methods was described in the (python/Python Program/Thorlabs camera DCC1545/Doc/DCU223C-Manual.pdf), p.61. Following the link indicated for Linux, it is possible to download the Linux drivers for the camera (see [here](python/Python Program/Thorlabs camera DCC1545/Doc/uEye_Linux_382_64Bit/uEye_Linux_382_64Bit/) for the drivers).
 
 Following the readme file, install the **uEye SDK for Linux**. In order to check if the installation worked :
 
