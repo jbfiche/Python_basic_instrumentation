@@ -12,7 +12,7 @@ Created on Wed Jul 15 10:15:55 2020
 from Driver import CNC                                                         # Import the class CNC from Driver.py
 import time               
 import site
-site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program')
+site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program') # Add a directory to sys.path and process its .pth files.
 import Config                                                                  # Import the parameters from Config.py
 
 

@@ -14,7 +14,7 @@ the device.
 import serial
 import time
 import site
-site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program')
+site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program')  # Add a directory to sys.path and process its .pth files.
 import Config
 
 class Valve:
