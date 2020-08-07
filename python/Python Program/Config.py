@@ -22,8 +22,8 @@ PortPrinter='/dev/ttyUSB1'      # Communication port of the printer
 '''
 Config for the valve Hamilton serial MVP
 '''
-NbofValve=3                                                                     # Nb of valve in series
-PortValve='COM10'                                                                # Communication port of the first valve 
+NbofValve=1                                                                     # Nb of valve in series
+PortValve='/dev/ttyS0'                                                          # Communication port of the first valve 
 ValveNB=("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p")       # List wich contains all the adress possible 
 ValveConfigPosition={};
 ValveConfigPosition["a"]=8                                                      # Configuration of the first valve 

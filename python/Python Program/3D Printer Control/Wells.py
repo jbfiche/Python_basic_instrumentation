@@ -111,9 +111,9 @@ class Wells:
 
       """      
       try:
-          self.TargetWells=TargetWells                                                                          # Save the value of the TargetWells in self.TargetWells
-          Wells.CheckValue(self)                                                                                # Check if the Well is within limits
-          Wells.CoordWells(self)                                                                                # Caluclate the relative coordinates of the wells from Wells 1
+          self.TargetWells=TargetWells                                                                              # Save the value of the TargetWells in self.TargetWells
+          Wells.CheckValue(self)                                                                                    # Check if the Well is within limits
+          Wells.CoordWells(self)                                                                                    # Caluclate the relative coordinates of the wells from Wells 1
           if self.Coord["Outrange"]=="Values within limits" and self.Coord["ReadyToGo"]=="YES" :                    # Check if the value is fine and if we are ready to manipulate
               if self.FirstMove==0:                                                                                 # If this is the first movement 
                   self.FirstMove=1                                                                                  # Change the value of FirstMove
