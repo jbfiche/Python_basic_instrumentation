@@ -34,3 +34,5 @@ ValveConfigPosition["c"]=2                                                      
 Config for the Ms-2000
 '''
 PortMS2000='COM4'            # Communication port of the MS2000
+LED=False                    # True if there is a LED
+ZAxis=False                  # True if the device can moove in z axis

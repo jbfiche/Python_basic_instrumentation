@@ -12,7 +12,7 @@ the device.
 import time
 import serial
 import site
-site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program')
+site.addsitedir(r'C:\Users\admin\Desktop\Stage_Aymerick\python\Python Program')
 import Config
 
 class MS2000:
@@ -33,6 +33,7 @@ class MS2000:
         """
         self.port=Config.PortMS2000       # Save the name of the port into the variable "self.port"
         self.MSState={}                   # Create a dictionnary
+        self.Coord={}                     # Create a dictionnary
         
     def OpenConnection(self):
         """
@@ -91,15 +92,15 @@ class MS2000:
             
             
             
-    def MoveREL(self,X,Y):
+    def MoveREL(self,*args):
         """
         The MoveREL method is sending instructions to the MS2000 in order to 
         change the positions of the motors.The user must indicate the 
-        X,Y coordinates as input. This method uses relative movements depending of
+        X,Y,(and maybe Z) coordinates as input. This method uses relative movements depending of
         the last coordinates of the device.
         We multiply the X and Y coordinates by 10 because we want them in tenths of 
-        microns and the user will write them in microns (easier to use)
-
+        microns and the user will write them in microns (easier to use).
+        *args means ths user can write as many arguments he wants.
         Parameters
         ----------
         X : X coordinates
@@ -110,13 +111,30 @@ class MS2000:
         None.
         
         """
-        self.s.flushInput()                                   # Remove data from input buffer
-        string2Send="R X="+str(X*10)+" Y="+str(Y*10)+"\r"     # This str input ask to the device to move by using relative movements. (Command : MOVREL)
-        self.s.write(string2Send.encode())                    # Send the input to the MS2000 encoded in UTF-8
-        MS2000.WaitForIdle(self)                              # Wait until the device has finished his movement by using the WaitForIdle() method
+        try:
+            self.s.flushInput()                                   # Remove data from input buffer
+            for i in range (0,len(args)):
+                self.Coord[i]=args[i]                             # Save the *args in a dictionnary to use it later
+            if Config.ZAxis == True:                              # Check if there is a Z axis
+                if len(self.Coord)==3:
+                    string2Send="R X="+str(self.Coord[0]*10)+" Y="+str(self.Coord[1]*10)+" Z="+str(self.Coord[2]*10)+"\r"    # This str input ask to the device to move by using relative movements. (Command : MOVREL)
+                    self.s.write(string2Send.encode())                    # Send the input to the MS2000 encoded in UTF-8
+                    MS2000.WaitForIdle(self)                              # Wait until the device has finished his movement by using the WaitForIdle() method
+                else:
+                    print("The number of arguments is wrong")
+            elif Config.Zaxis == False:
+                if len(self.Coord)==2:
+                    string2Send="R X="+str(self.Coord[0]*10)+" Y="+str(self.Coord[1]*10)+"\r"     # This str input ask to the device to move by using relative movements. (Command : MOVREL)
+                    self.s.write(string2Send.encode())                                            # Send the input to the MS2000 encoded in UTF-8
+                    MS2000.WaitForIdle(self)                                                      # Wait until the device has finished his movement by using the WaitForIdle() method
+                else:
+                    print("The number of arguments is wrong")
+            else :
+                print('Complete the file Config.py (ZAxis?)')
+        except AttributeError:
+            print("You have to open the connection if you want to communicate with the device")
         
-        
-    def MoveABSOL(self,X,Y):
+    def MoveABSOL(self,*args):
         """
         The MoveABSOL method is sending instructions to the MS2000 in order to 
         change the positions of the motors.The user must indicate the 
@@ -134,12 +152,30 @@ class MS2000:
         -------
         None.
         
-        """        
-        self.s.flushInput()                                  # Remove data from input buffer
-        string2Send="M X="+str(X*10)+" Y="+str(Y*10)+"\r"    # This str input ask to the device to move by using absolute movement (Command : MOVE)
-        self.s.write(string2Send.encode())                   # Send the input to the MS2000 encoded in UTF-8
-        MS2000.WaitForIdle(self)                             # Wait until the device has finished his movement by using the WaitForIdle method
-        
+        """   
+        try:
+            self.s.flushInput()                                  # Remove data from input buffer
+            for i in range(0,len(args)):
+                self.Coord[i]=args[i]                            # Save thes *args in a dictionnary to use it later
+            if Config.ZAxis == True:
+                if len(self.Coord)==3:
+                    string2Send="M X="+str(self.Coord[0]*10)+" Y="+str(self.Coord[1]*10)+" Z="+str(self.Coord[2]*10)+"\r"    # This str input ask to the device to move by using absolute movement (Command : MOVE)
+                    self.s.write(string2Send.encode())                   # Send the input to the MS2000 encoded in UTF-8
+                    MS2000.WaitForIdle(self)                             # Wait until the device has finished his movement by using the WaitForIdle method
+                else:
+                    print("The number of arguments is wrong")
+            elif Config.ZAxis==False:
+                if len(self.Coord)==2:
+                    string2Send="M X="+str(self.Coord[0]*10)+" Y="+str(self.Coord[1]*10)+"\r"    # This str input ask to the device to move by using absolute movement (Command : MOVE)
+                    self.s.write(string2Send.encode())                   # Send the input to the MS2000 encoded in UTF-8
+                    MS2000.WaitForIdle(self)                             # Wait until the device has finished his movement by using the WaitForIdle method
+                else:
+                    print("The number of arguments is wrong")
+            else:
+                print('Complete the file Config.py (ZAxis?)')
+        except AttributeError:
+            print("You have to open the connection if you want to communicate with the device")   
+            
     def AxisPosition(self):
         """
         The AxisPosition method ask to the device its coordinates (X,Y,Z).
@@ -152,7 +188,7 @@ class MS2000:
 
         """
         self.s.flushInput()                     # Remove data from input buffer
-        string2Send="W X Y Z\r"                   # This str input ask to the device his current position for the axis specified (Command : WHERE)
+        string2Send="W X Y Z\r"                 # This str input ask to the device his current position for the axis specified (Command : WHERE)
         self.s.write(string2Send.encode())      # Send the input to the MS2000 encoded in UTF-8
         self.Output=self.s.readline()           # Read the output and save it in "self.Output". The coordinates are absolute
       
@@ -166,19 +202,29 @@ class MS2000:
         None.
 
         """
-        self.ROI=open("ROI.txt","a")                                                # Open the file "ROI.txt" in append mode.The program adds the text to the end of the file. 
-        MS2000.AxisPosition(self)                                                   # Ask the coordinates of the device by using the AxisPosition method 
-        Coordinates=self.Output.decode()                                            # Translate the response in str (previously in UTF-8) and save it into Coordinates. Typical response ":A 12345 6213"
-        caractere=" "                                                               # We only want X,Y coordinates so we will split the response
-        Split=Coordinates.split(caractere)                                          # Split coordinates into a list where each "word" is a list item
-        X=Split[1]                                                                  # Split[0] is ":A" so X coordinates will be Split[1]
-        Y=Split[2]                                                                  # The coordinates are given in tenths of microns. We want them in microns 
-        X=X[0:len(X)-1]+"."+X[len(X)-1]                                             # Add a coma between the last digit and the one before (12345 → 1234,5)
-        Y=Y[0:len(Y)-1]+"."+Y[len(Y)-1]                                             # The user will get the data in microns instead of tenths of microns
-        self.ROI.write("ROI : "+str(X)+" "+str(Y)+"\r\r")                           # Write "ROI : X Y" in the "ROI.txt" file
-        self.ROI.close()                                                            # Close the file "ROI.txt" opened in append mode 
+        try:
+            self.ROI=open("ROI.txt","a")                                                # Open the file "ROI.txt" in append mode.The program adds the text to the end of the file. 
+            MS2000.AxisPosition(self)                                                   # Ask the coordinates of the device by using the AxisPosition method 
+            Coordinates=self.Output.decode()                                            # Translate the response in str (previously in UTF-8) and save it into Coordinates. Typical response ":A 12345 6213"
+            caractere=" "                                                               # We only want X,Y coordinates so we will split the response
+            Split=Coordinates.split(caractere)                                          # Split coordinates into a list where each "word" is a list item
+            X=Split[1]                                                                  # Split[0] is ":A" so X coordinates will be Split[1]
+            Y=Split[2]                                                                  # The coordinates are given in tenths of microns. We want them in microns 
+            Z=Split[3]
+            X=X[0:len(X)-1]+"."+X[len(X)-1]                                             # Add a coma between the last digit and the one before (12345 → 1234,5)
+            Y=Y[0:len(Y)-1]+"."+Y[len(Y)-1]                                             # The user will get the data in microns instead of tenths of microns
+            Z=Z[0:len(Z)-1]+"."+Z[len(Z)-1]
+            if Config.ZAxis==False:
+                self.ROI.write("ROI : "+str(X)+" "+str(Y)+"\r")                         # Write "ROI : X Y" in the "ROI.txt" file
+            elif Config.ZAxis==True:
+                self.ROI.write("ROI : "+str(X)+" "+str(Y)+" "+str(Z)+"\r")
+            else:
+                print('Complete the file Config.py (ZAxis?)')
+            self.ROI.close()                                                            # Close the file "ROI.txt" opened in append mode 
+        except AttributeError:
+            print("You have to open the connection if you want to communicate with the device")   
         
-    def GOTOROI(self):
+    def GOTOROI(self,N):
         """
         The GOTOROI method move the device to all the coordinates of ROI (Range Of Interest)
         saved in the file "ROI.txt".
@@ -188,18 +234,33 @@ class MS2000:
         None.
 
         """
-        self.GoTo=open("ROI.txt","r")                # Open the file "ROI.txt" in read mode.The program reads the text and save it into "self.GoTo"
-        lines=self.GoTo.readlines()                  # Save all the lines of "ROI.txt" in the variable lines
-        Nboflines=len(lines)                         # Count the amount of lines
-        for i in range(0,Nboflines):                 
-            Currentline=lines[i]
-            if Currentline[0:3]=="ROI":              # If the first 3 terms of the line are "ROI", the program will do an action otherwise it will do nothing   
-                caractere=" "                        # We only want X,Y coordinates so we will split the reponse 
-                Split=Currentline.split(caractere)   # Split coordinates into a list where each "word" is a list item
-                X=float(Split[2])                    # X coordinates will be in Split[2]
-                Y=float(Split[3])                    # Y coordinates will be in Split[3]
-                MS2000.MoveABSOL(self,X,Y)           # Move the MS2000 to the ROI
-        self.GoTo.close()                            # Close the file "ROI.txt" opened in read mode 
+        try:
+            self.GoTo=open("ROI.txt","r")                # Open the file "ROI.txt" in read mode.The program reads the text and save it into "self.GoTo"
+            lines=self.GoTo.readlines()                  # Save all the lines of "ROI.txt" in the variable lines
+            Nboflines=len(lines)                         # Count the amount of lines
+            ROINumber=1
+            for i in range(0,Nboflines):                 
+                Currentline=lines[i]
+                if Currentline[0:3]=="ROI" and ROINumber==N :              # If the first 3 terms of the line are "ROI", the program will do an action otherwise it will do nothing   
+                    caractere=" "                                          # We only want X,Y coordinates so we will split the reponse 
+                    Split=Currentline.split(caractere)                     # Split coordinates into a list where each "word" is a list item
+                    X=float(Split[2])                                      # X coordinates will be in Split[2]
+                    Y=float(Split[3])                                      # Y coordinates will be in Split[3]
+                    if Config.ZAxis==True and len(Split)>4:
+                        ROINumber=ROINumber+1
+                        Z=float(Split[4])                                  # Z ccordinates will be in Split[4]
+                        MS2000.MoveAbsol(self,X,Y,Z)                       # Move the MS2000 to the ROI
+                    elif Config.ZAxis==False and len(Split)==4:   
+                        ROINumber=ROINumber+1
+                        MS2000.MoveABSOL(self,X,Y)                         # Move the MS2000 to the ROI
+                    else:
+                        ROINumber=ROINumber+1
+                        print('Complete the file Config.py (Zaxis?)')
+                else:
+                    ROINumber=ROINumber+1
+            self.GoTo.close()                            # Close the file "ROI.txt" opened in read mode 
+        except AttributeError:
+            print("You have to open the connection if you want to communicate with the device")   
                 
     def DELETEALLROI(self):
         """
@@ -213,7 +274,7 @@ class MS2000:
         self.Delete=open("ROI.txt","w")             # Open the file "ROI.txt" and delete every data saved in the file
         self.Delete.close()                         # Close the file "ROI.txt" opened in write mode
         
-    def DELETETARGETROI(self,X):
+    def DELETETARGETROI(self,N):
         """
         The DELETETARGETROI method delete a specific ROI written in "ROI.txt".
         The user must say wich ROI he wants to delete
@@ -230,8 +291,9 @@ class MS2000:
         NbROI=1
         for line in lines:                                # We want to delete a specific ROI so we will check for every line
             if line[0:3]=="ROI":                          # If the first 3 terms of the line are "ROI", the program will do an action otherwise it will do nothing   
-                if NbROI==X:                              # Check if the ROI correspond at the ROI we want to delete
-                    self.DeleteTarget.write(" ")          # We write a blanck
+                if NbROI==N:                              # Check if the ROI correspond at the ROI we want to delete
+                    self.DeleteTarget.write("")          # We write a blanck
+                    NbROI=NbROI+1
                 else:                                     # If the line cointain a ROI but not the one we want to delete
                     self.DeleteTarget.write(line)         # Write the ROI in the file 
                     NbROI= NbROI+1       
@@ -279,14 +341,23 @@ class MS2000:
         None.
 
         """
-        time.sleep(2)          # Wait 2sec
-        self.s.close()         # Close the communication with the serial port
+        try:
+            time.sleep(2)          # Wait 2sec
+            self.s.close()         # Close the communication with the serial port
+        except AttributeError:
+            print('Impossible to close the connection')
 
         
 if __name__ == "__main__":
     MS=MS2000()
     MS.OpenConnection()
-    MS.MemorizeROI()
-    # MS.GOTOROI()
+    # MS.MoveABSOL(2000,1000)
+    # MS.MemorizeROI()
+    # MS.MoveABSOL(1000,2000)
+    # MS.MemorizeROI()
+    # MS.MoveABSOL(3000,3000)
+    # MS.MemorizeROI()
+    MS.GOTOROI(1)
+    # MS.DELETETARGETROI(2)
     MS.CloseConnection()
     
