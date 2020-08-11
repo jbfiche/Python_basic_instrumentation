@@ -40,6 +40,8 @@ ZAxis=False                  # True if the device can moove in z axis
 '''
 Config PY Controller
 '''
-PYName='C-663'
-PYID='0105500035'
+PYName=('C-663','')
+PYID=('0105500035','')
+PYLimitUP=('25','')
+PYLimitDown=('0','')
 NbofAxes=1
