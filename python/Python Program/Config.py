@@ -36,3 +36,10 @@ Config for the Ms-2000
 PortMS2000='COM4'            # Communication port of the MS2000
 LED=False                    # True if there is a LED
 ZAxis=False                  # True if the device can moove in z axis
+
+'''
+Config PY Controller
+'''
+PYName='C-663'
+PYID='0105500035'
+NbofAxes=1
