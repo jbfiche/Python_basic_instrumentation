@@ -7,7 +7,7 @@ the device.
 import time
 import pipython
 import site
-site.addsitedir('C:\\Users\\NoelFlantier\\Desktop\\Stage\\Stage_Aymerick\\python\Python Program')  # Add a directory to sys.path and process its .pth files.
+site.addsitedir('/home/aymerick/Desktop/Stage_Aymerick/python/Python Program')  # Add a directory to sys.path and process its .pth files.
 import Config
 
 class PITranslationStage:
@@ -44,7 +44,7 @@ class PITranslationStage:
                 self.Device="PI "+Config.PYName[i-1]+" Mercury-Step SN "+Config.PYID[i-1]   # Save the full name of the device
                 self.pidevice.ConnectUSB(self.Device)                                       # Open the connection with the current device
                 self.pidevice.SVO(str(i),True)                                              # Set servo control for the current axes on "on"
-                self.pidevice.FNL(str(i))                                                   # Start a refrence move to the negative limit switches
+                self.pidevice.FNL(str(i))                                                   # Start a reference move to the negative limit switches
                 PITranslationStage.WaitForIdle(self,i)
         except pipython.GCSError:
                 print("Wrong informations or communication already openened")
@@ -64,8 +64,8 @@ class PITranslationStage:
         """
         try:
             if int(Config.PYLimitUP[int(Axes)-1])>>int(Axes)>>int(Config.PYLimitDown[int(Axes)-1]):         # Check if we are int he limits    
-                self.pidevice.MOV(Axes,N)                          # Move the axes 
-                PITranslationStage.WaitForIdle(self,Axes)          # Wait until the move is finished
+                self.pidevice.MOV(Axes,N)                                                                   # Move the axes 
+                PITranslationStage.WaitForIdle(self,Axes)                                                   # Wait until the movement is finished
             else:
                 print('Values out of the limits')
         except pipython.GCSError:
@@ -102,11 +102,11 @@ class PITranslationStage:
         None.
         """
         for i in range (0,20):                               # Do 20 iterations so we wait 20 seconds max
-           PITranslationStage.Position(self,Axes)       # Check the current position
-           A=self.State["Coord"+str(Axes)]              # Save the result in A
+           PITranslationStage.Position(self,Axes)            # Check the current position
+           A=self.State["Coord"+str(Axes)]                   # Save the result in A
            time.sleep(1)                                     # Wait 1 sec
-           PITranslationStage.Position(self,Axes)       # Check the new position
-           B=self.State["Coord"+str(Axes)]              # Save the result in B
+           PITranslationStage.Position(self,Axes)            # Check the new position
+           B=self.State["Coord"+str(Axes)]                   # Save the result in B
            if A==B:                                          # If the position didn't change, the movement is finished
                break                                         # We break the loop
            
@@ -120,7 +120,7 @@ class PITranslationStage:
 
         """
         try:
-            self.pidevice.CloseConnection()
+            self.pidevice.CloseConnection()                  # Close the connection with every device
         except pipython.GCSError:
             print("Can't close the communication")
         

@@ -6,7 +6,7 @@ Created on Thu Jul 16 16:21:53 2020
 @author: aymerick
 
 The Valve class is used to control a Serial MVP instrument. The 
-following methods are the most basic functions that are neede to interact with
+following methods are the most basic functions that are needed to interact with
 the device.
 
 """

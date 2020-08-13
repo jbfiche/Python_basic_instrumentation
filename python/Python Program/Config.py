@@ -40,8 +40,8 @@ ZAxis=False                  # True if the device can moove in z axis
 '''
 Config PY Controller
 '''
-PYName=('C-663','')
-PYID=('0105500035','')
-PYLimitUP=('25','')
-PYLimitDown=('0','')
-NbofAxes=1
+PYName=('C-663','')                       # Name of all the devices plugged
+PYID=('0105500035','')                    # SerialNum of each device
+PYLimitUP=('25','')                       # UPLimit for each device (in mm)
+PYLimitDown=('0','')                      # DownLimit for each device (in mm)
+NbofAxes=1                                # Nb of Axes (If each device can control one Axes: Nbof Axes = Nb of Device)
