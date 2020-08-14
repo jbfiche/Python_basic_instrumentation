@@ -16,7 +16,7 @@ import os
 import ManipulationParameters as MP                     # No need to specify the path to "ManipulationParameters" if all the scripts are in the same folders
 from threading import Thread
 
-NewFile={}                              # Create a dictionnary
+NewFile=[]                              # Create a dictionnary
 NumberOfNewFiles=0                      # Count the amount of new files in the depository
 AlreadyCopied=0                         # Count the amount of file already copied 
 CheckFinished=False                     # Check if the class read has finished to check the folder
@@ -49,6 +49,7 @@ class Read(Thread):
         
         """
         Thread.__init__(self)        # Initialisation of thread
+        self.waitBeforeNewCheck = 1
         
     def run(self): 
         """
@@ -63,27 +64,22 @@ class Read(Thread):
         global NewFile                                          # Call the variable defined outside the class
         global NumberOfNewFiles                                 # We want the variable to be global, because we will use it in the other class 
         global CheckFinished                                    # This is how the class will be able to interact with each other.
-        
+      
         for i in range (0,MP.Duration):                         # We want to check the file during all the manipulation. So, the user will write the duration of the manipulation in ManipulationParameters.py
             OLD=glob.glob(MP.Path1+"*"+MP.Format)               # Check what contains the folder. MP.Path1 → Path to the folder; MP.Format → Format of the data (.csv,.jpg,.....)
-            time.sleep(1)                                       # Wait one second
+            time.sleep(self.waitBeforeNewCheck)                                       # Wait one second
             NEW=glob.glob(MP.Path1+"*"+MP.Format)               # Check if the programms in the folder has changed. (Important: If there is new data but their format are not corresponding to MP.Format, NEW and OLD will be the same)
             if OLD != NEW:                                      # Check if something has changed during the one second delay
                 if len(OLD)==0:                                 # See if it's the first time a new file (or more) is in the folder
-                    for l in range (0,len(NEW)):                # We want to copy all the new files
-                        NewFile[NumberOfNewFiles]=NEW[l]        # Save all the path in the dictionnary. (NEW[l] looks like this '/home/aymerick/Desktop/Directory1/Test.rst')
-                        NumberOfNewFiles=NumberOfNewFiles+1     # Add one to the number of new files
+                    NewFile=NEW
+                    NumberOfNewFiles=len(NEW)
+                    print("Original list of files: \n{}".format(NEW))
                 else:                                           # If it's not the first time a file is added to the folder
-                    for i in range (0,len(NEW)):                
-                        for k in range (0,len(OLD)):            # The position of each file may change in the folder (alphabetical order). So, we will compare each file in NEW to each file in OLD.
-                            if NEW[i]==OLD[k]:                  # If the file is in OLD and in NEW, nothing happens
-                                FileInTheList=True 
-                                break
-                            else:                               # In the case the file is only in NEW, we want to copy it 
-                                FileInTheList=False
-                        if FileInTheList==False:
-                            NewFile[NumberOfNewFiles]=NEW[i]    # Save all the path in the dictionnary.
-                            NumberOfNewFiles=NumberOfNewFiles+1 # Add one to the number of new files
+                    listNewFiles=[x for x in NEW if x not in OLD]
+                    NumberOfNewFiles=len(listNewFiles)
+                    NewFile.append(listNewFiles)
+                    print("New file added: \n{}".format(listNewFiles))
+                           
         CheckFinished=True                                      # The class has finished to check the folder (The manipulation is finished)
         print("Check Finished")
                 
