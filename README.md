@@ -4,7 +4,7 @@
 
 --------------------
 
-------------
+--------------------
 
 ## Configuration file :
 
@@ -166,4 +166,32 @@ Following the readme file, install the **uEye SDK for Linux**. In order to check
  A specific API to interface uEye with Python can be downloaded [here](https://pypi.org/project/pyueye/). In order to found the manual and examples, you need to download the files available on the webpage. A very simple example can also be downloaded from the IDS website and can be found in the folder python/Python Program/Thorlabs camera DCC1545/Doc/pyueye/uEye_SimpleLive_PyuEye_OpenCV. It was tested and allow for a proper detection of the DCC1545 camera.
 
 Finally, the manual with all the functions can be found [here](https://en.ids-imaging.com/download-details/AB.0010.1.25600.23.html?os=linux&version=&bus=64&floatcalc=) but you need to have an account to access this webpage. 
+
+---------------------------------------------------------
+
+## PI stepper motor controller
+
+**PIController.py**: System Tested:Windows(10) Works with:Python 3.8  PI Tested:C-663
+
+**Comunication method** : (USB). Need to install pipython by using the CD.
+
+Drivers for the PI stepper motor controller. Contains a class called **PITranslationStage** containing all the methods needed to communicate with the device. 
+
+Methods in **PIController**:
+
+ - Open/Close Connection (Open or close the communication with the device)
+ - WaitForIdle (Wait until the device has finished his action)
+ - Move (Move the device to target coordinates in absolute coordinates)
+ - Position (Return the current axis positions of the device)
+ 
+More detailed information can be found python/Python Program/PI stepper motor controller/README_PIController.md
+
+
+
+
+
+
+
+
+
 

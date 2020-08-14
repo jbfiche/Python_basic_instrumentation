@@ -146,6 +146,8 @@ class Analyze(Thread):
                                       
                     File.close()                                                 # Close the file
                     
+        print("Analyze finished")
+                    
 if __name__=="__main__":
     
     Thread_1=Read()
