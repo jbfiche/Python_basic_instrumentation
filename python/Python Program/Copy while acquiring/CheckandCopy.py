@@ -136,7 +136,7 @@ class Copy(Thread):
         while CheckFinished==False or AlreadyCopied != NumberOfNewFiles:      # We want to check if a new file has been detected by Read() but when Read() has finished (manipulation is over), we want to stop checking.     
             if AlreadyCopied != NumberOfNewFiles:                             # If Read() has detected new files
                 for i in range (AlreadyCopied,NumberOfNewFiles):              # We want to copy all of the new files
-                    AlreadyCopied=AlreadyCopied+1                             # We copied one file so we had one to the value of AlreadyCopied
+                    AlreadyCopied=AlreadyCopied+1                             # We copied one file so we add one to the value of AlreadyCopied
                     time.sleep(4)                                             # This time is to simulate a long time for the copy (you can delete it)
                     Caractere="/"
                     Prog=NewFile[i].split(Caractere)                          # We are looking for the name of the new file

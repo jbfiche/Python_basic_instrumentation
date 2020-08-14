@@ -10,4 +10,4 @@ Path1="/home/aymerick/Desktop/Stage_Aymerick/python/Python Program/Copy while ac
 Format=".rst"                                                  # Format of the data
 Path2="/home/aymerick/Desktop/Stage_Aymerick/python/Python Program/Copy while acquiring/Directory2/"                     # Where the user wants to save his data
 Duration=40                                                    # Duration of manipulation (sec)
-DurationProcess=20                                             # Duration of the process
+DurationProcess=30                                             # Duration of the process
