@@ -51,6 +51,7 @@ class LumencorLaser(object):
             if (not self.getLaserOnOff()):
                 self.setLaserOnOff(False)
 
+                
 # WORK IN PROGRESS
 #    def getNumberLasers(self):
     #     """
