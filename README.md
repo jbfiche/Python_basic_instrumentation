@@ -1,12 +1,12 @@
 # Python_basic_instrumentation
 
-# List of the files in the folder PROGRAM
 
---------------------
 
---------------------
+[TOC]
 
-## Configuration file :
+
+
+## Configuration file
 
 **Config.py** : Parameters of each device (Printer,Wells,Valve, etc.). Read it before using any program to be sure that the parameters correspond to your devices. You can change their values but don't change the name of the variables. You can add new variables if you need to. To call a variable in an other script you have to:
 
@@ -15,7 +15,7 @@
 
 ----------------------------------------------------
 
-## 3D Printer control (cnc) :
+## 3D Printer control (cnc)
 
 **Driver.py** : System tested: Windows(10)+Linux(PopOS)   Works with:Python 3.8;3.7 
 
@@ -49,7 +49,7 @@ More information can be found at python/Python Program/3D Printer Control
 
 ----------------------------------------------------
 
-## HAMILTON valve used on the merFISH setups :
+## HAMILTON valve used on the merFISH setups
 
 **Valve.py** : System tested:Windows(10)+Linux(PopOS)    Works with:Python 3.8
 
@@ -67,7 +67,7 @@ More information python/Python Program/Hamilton valve/How_to_use.md
 
 ----------------------------------------------------
 
-## ASI translation stage MS2000 :
+## ASI translation stage MS2000
 
 **DriverMS2000.py**: System Tested:Windows(10)    Works with:Python 3.8
 
@@ -92,7 +92,7 @@ More detailed information can be found python/Python Program/ASI MS2000 translat
 
 ----------------------------------------------------
 
-## ANDOR emCCD camera :
+## ANDOR emCCD camera
 
 **andorEmccd.py** : System Tested:Windows(10)   Works with:Python 3.6;3.7   Doesn't work with:Python 3.8
 
@@ -114,7 +114,7 @@ Problem : File where you can find some solutions to some problems I have encount
 
 ----------------------------------------------------
 
-## LUMENCOR CELESTA laser source :
+## LUMENCOR CELESTA laser source
 
 **control_celesta.py** : System Tested:Windows(10)+Linux (PopOs) Works with:Python 3.8
 
@@ -127,7 +127,7 @@ The code called "control_celesta.py" will be used to modulate the lasers in sync
 
 ----
 
-## MEASUREMENT COMPUTING DAQ :
+## MEASUREMENT COMPUTING DAQ
 
 **daq.py** : System Tested:Xubuntu  Works with:Python 3.7 
 
@@ -140,11 +140,11 @@ Note that all files and documentation can be found python/Python Program/Measure
 
 -----
 
-## THORLABS CMOS camera (DCC1545) :
+## THORLABS CMOS camera (DCC1545)
 
 All files were installed python/Python Program/Thorlabs camera DCC1545/Doc. A manual of all the cameras can be also be found in the same folder.
 
-## Thorlabs sdk - NOT WORKING
+### Thorlabs sdk - NOT WORKING
 
 The CMOS camera from Thorlabs was tested on the computer. This model is monochrome with a 1280x1024 pixels sensor. The SDK/ C/C++ libraries for Linux can be found [here](https://www.thorlabs.com/software_pages/ViewSoftwarePage.cfm?Code=ThorCam).
 
@@ -156,7 +156,7 @@ In order to install a Python wrapper, the following sdk needs to be installed as
 
 Installation went well though in the end it was impossible to detect any camera on the computer... apparently this model of camera is not supported.
 
-## PyuEye and drivers
+### PyuEye and drivers
 
 Since our DCC-1545 camera was not detected using the Thorlab sdk, another methods was described in the (python/Python Program/Thorlabs camera DCC1545/Doc/DCU223C-Manual.pdf), p.61. Following the link indicated for Linux, it is possible to download the Linux drivers for the camera (see python/Python Program/Thorlabs camera DCC1545/Doc/uEye_Linux_382_64Bit/uEye_Linux_382_64Bit/ for the drivers).
 
@@ -187,15 +187,16 @@ Methods in **PIController**:
  - WaitForIdle (Wait until the device has finished his action)
  - Move (Move the device to target coordinates in absolute coordinates)
  - Position (Return the current axis positions of the device)
- 
+
 More detailed information can be found python/Python Program/PI stepper motor controller/README_PIController.md
 
+---
 
+## HAMAMATSU sCMOS Flash4 
 
+**Hamamatsu_camera.py**: System Tested:Windows(10) Works with:Python 3.7 - Camera tested from the RAMM setup with Spyder
 
+The program is using the [SDK4](https://dcam-api.com/sdk-downloads/) from Hamamatsu website. The program is using the C dll and a complete documentation can be found when downloading the SDK. The initial program was downloaded from Zhuang lab [github](https://github.com/ZhuangLab/storm-control/tree/master/storm_control/sc_hardware/hamamatsu) and was modified for the test. 
 
-
-
-
-
+**Problem** : for some reason the program cannot run twice in a row. Between each test Spyder must be close, else an error message is sent. For the moment, no correction seems to work. 
 
